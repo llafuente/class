@@ -1,10 +1,12 @@
 var $ = require("../lib/class.js");
+var assert = require("assert");
 
 // nom install deep_equal @substack
 var deep_equal = require("deep-equal");
 
 //debug
 $.log_level = 0;
+
 
 
 //-------------------
@@ -34,6 +36,7 @@ Dog.implements({
 
 var d = new Dog();
 
+
 if( "Dog bites!" != d.bite()) {
     throw "Dog didnt byte! " + d.bite();
 }
@@ -59,7 +62,6 @@ var k = new Kitty();
 if( "Kitty bites!" != k.bite()) {
     throw "Kitty didnt byte properly! " + k.bite();
 }
-
 //---------
 // abstract
 //---------
@@ -248,8 +250,29 @@ if (!deep_equal(w.serialize(true), //serialize with private vars
 }());
 
 
+// typeof test
 
+assert.equal($.typeof(new Date()), "date", "type of string fail");
 
+assert.equal($.typeof("string"), "string", "type of string fail");
+assert.equal($.typeof([]), "array", "type of array fail");
+assert.equal($.typeof(new Array(1)), "array", "type of array fail");
+assert.equal($.typeof(1), "number", "number 1 fail");
+assert.equal($.typeof(1.0), "number", "number 1.0 fail");
+assert.equal($.typeof(NaN), "null", "Nan fail");
+assert.equal($.typeof(null), "null", "null fail");
+assert.equal($.typeof(undefined), "null", "undefined fail");
+(function() {
+assert.equal($.typeof(arguments), "arguments", "undefined fail");
+}());
+
+(function() {
+assert.equal($.typeof(arguments), "arguments", "undefined fail");
+}({x:1}));
+
+(function() {
+assert.equal($.typeof(arguments), "arguments", "undefined fail");
+}(1, 1));
 
 
 
