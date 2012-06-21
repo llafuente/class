@@ -1,16 +1,15 @@
 node-class
 ==========
 
-Class system for nodejs, require ES5. Provide a proper way yo deal with a basic class layer.
-It force you to code in a clean way, a very clean way.
-provide a proper typeof and instanceof.
+Class system for nodejs (ES5 required, could work on new browsers).
+Provide a proper clean wait to deal with spagetti code that usually polute Javascript.
+Also provide a proper typeof and instanceof.
 
 
 Objective
 =========
-Provide a good way to deal with classes and messy code that is normally asociated with javascript.
-But in the end, provide a very thin layer in production where all "check" code could be removed so no overhead!
-
+Force coders to code in a clean way, dont allow messy code if possible...
+Developement version that throws and test many things but provide a production code that dont do that so no overhead!
 
 
 HOWTO: Creation
@@ -19,8 +18,10 @@ HOWTO: Creation
 ``` js
 
 var $ = require('class');
+
 var Dog = new $.Class("Dog", {
-    animal: true
+    animal: true,
+    __bite_power: 10
 });
 
 Dog.implements({
@@ -31,7 +32,7 @@ Dog.implements({
 
 var d = new Dog();
 
-console.log(k.bite()); // Dog bites!
+console.log(k.bite()); // console: Dog bites!
 
 ```
 
@@ -40,24 +41,23 @@ HOWTO: Extending
 
 
 ``` js
-// paste the code above!
+// continue from above...
 var Kitty = new $.Class("Kitty", {
+    __bite_power: 5
 });
 
-Kitty.extends(Dog);
+Kitty.extends(Dog, false); //false means do not override properties!
 
 Kitty.implements({
     bite: function() {
-        console.log("Kitty bites!");
+        return "Kitty bites!";
     }
 });
 
-
 var k = new Kitty();
-var d = new Dog();
 
-k.bite(); // Dog bites!
-d.bite(); // Kitty bites!
+k.bite(); // console: Dog bites!
+d.bite(); // console: Kitty bites!
 
 ```
 
@@ -65,28 +65,52 @@ HOWTO: Abstract Class
 ==============
 
 ``` js
+
 var Animal = new $.Class("Animal", {
-    animal: true
+    animal: true,
+    __bite_power: null
 });
 
 Animal.abstract(["bite"]);
 
-new Animal(); // throws -> because its abstract!
+//you could try this... buts...
+try {
+    new Animal(); // throws -> because its abstract!
+} catch(e) {
+}
 
-var Dog = new $.Class("Dog", {
+var Whale = new $.Class("Whale", {
+    __bite_power: /*it's over*/ 9000 /*!!!!!!!*/
 });
 
-Dog.extends(Animal);
+Whale.extends(Animal, false); // 2nd arguments false means, do not override_options
 
-new Dog(); // throws -> because you dont implement "bite"
+//you could try this... buts...
+try {
+    new Whale(); // throws -> because bite is not implemented
+} catch(e) {
+}
 
-Dog.implements({
+Whale.implements({
     bite: function(where) {
-        console.log("Dog bites!");
+        return "kill me!";
     }
 });
 
-new Dog(); // ok now :)
+var w = new Whale(); // ok now :)
+
+console.log(w.bite()); // console: kill me!
+
+```
+
+
+HOWTO: Aliasing
+==============
+
+``` js
+
+Whale.alias("destroy", "bite");
+console.log(w.destroy()); // console: kill me!
 
 ```
 
@@ -94,29 +118,25 @@ HOWTO: Finale methods
 ==============
 
 ``` js
-var Animal = new $.Class("Animal", {
-    animal: true
+
+// imagine you have this before the extends
+Animal.final({
+    die: function() {
+        return "an animal died";
+    }
 });
 
-Animal.finale({
-    bite: function() {
-        console.log("animal bites!");
-    }
-);
+// you should extend allways when the class is finished
+Whale.extends(Animal, false);
 
-var a = new Animal();
-a.bite(); // animal bites!
-
-var Dog = new $.Class("Dog", {
-});
-
-Dog.extends(Animal);
-
-Dog.implements({
-    bite: function(where) {
-        console.log("Dog bites!");
-    }
-}); // throws! -> finale functions cannot be implemented again!
+try {
+    Whale.implements({
+        die: function() {
+            return "dont mind the text, it throws!";
+        }
+    });
+} catch() {
+}
 
 ```
 
@@ -138,7 +158,9 @@ $.typeOf({}) -> object
 $.typeOf(1) -> number
 $.typeOf(NaN) -> null
 $.typeOf(null) -> null
-$.typeOf(undefined) -> null
+$.typeOf(undefined) -> null // maybe changed!
+$.typeOf(true) -> boolean
+$.typeOf(false) -> boolean
 $.typeOf(argumments) -> arguments
 
 $.typeOf(a) -> Animal
@@ -154,21 +176,32 @@ HOWTO: serialization & properties init
 
 var Vector = new $.Class("Vector", {
     x: 0,
-    y: 0
+    y: 0,
+    __private: true
 });
 
 var v = new Vector({x: 10, y:10});
 console.log(v.serialize()); // {x: 10, y:10}
+console.log(v.serialize(true)); // {x: 10, y:10, __private: true}
 
 ```
 
-install
+
+More HOWTO soon.
+================
+
+check: extends_js.js it has some sugar without touching prototypes (except Function)
+
+
+Install
 =======
 
 With [npm](http://npmjs.org) do:
 
 ```
+
 npm install class
+
 ```
 
 test
@@ -178,6 +211,8 @@ The test is custom made :)
 
 ```
 
+npm test
+// or
 cd /test
 node test.js
 
