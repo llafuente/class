@@ -1,0 +1,37 @@
+{
+  "name": "class",
+  "version": "0.0.1",
+  "description": "node class system",
+  "main": "index.js",
+  "directories": {
+    "lib": ".",
+    "example": "",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/llafuente/class.git"
+  },
+  "keywords": [
+    "class",
+    "instanceof",
+    "typeof",
+    "extends",
+    "implements"
+  ],
+  "author": {
+    "name": "Luis lafuente",
+    "email": "llafuente@noboxout.com",
+    "url": "http://www.noboxout.com"
+  },
+  "license": "MIT",
+  "engine": {
+    "node": ">=0.6"
+  },
+  "_id": "class@0.0.1",
+  "dependencies": {},
+  "optionalDependencies": {},
+}
