@@ -7,7 +7,32 @@ var deep_equal = require("deep-equal");
 //debug
 $.log_level = 0;
 
+var Vector = new $.Class("Vector2", {
+    x: 0,
+    y: 0,
+    __i: false
+});
 
+Vector.hide(["__i"]);
+
+var v = new Vector({x:10, y:10, __i: true});
+
+assert.equal(v.x, 10,     "constructor error x="   + v.x  );
+assert.equal(v.y, 10,     "constructor error y="   + v.y  );
+assert.equal(v.__i, true, "constructor error __i=" + v.__i);
+
+var v2 = new Vector({x:15, y:15, __i: 15});
+
+assert.equal(v.x, 10,     "constructor error x="   + v.x  );
+assert.equal(v.y, 10,     "constructor error y="   + v.y  );
+assert.equal(v.__i, true, "constructor error __i=" + v.__i);
+
+assert.equal(v2.x, 15,     "constructor error x="   + v.x  );
+assert.equal(v2.y, 15,     "constructor error y="   + v.y  );
+assert.equal(v2.__i, 15,   "constructor error __i=" + v.__i);
+
+console.log(v);
+console.log(v2);
 
 //-------------------
 // Class new & implements
@@ -182,67 +207,7 @@ if (!deep_equal(w.serialize(true), //serialize with private vars
 }
 
 
-//
-// events - basic flow control
-//
-function test_event(event) {
-    var counter = 0;
 
-    var sample_ev0 = $.Eventize(function() {
-        ++counter;
-
-        if(counter == 1) {
-            this.delay(500, this);
-            this.remove();
-        }
-    });
-
-    var sample_ev1 = $.Eventize(function() {
-        ++counter;
-
-        assert.equal(counter, 2, "[" + event + "]sample_ev1 error [" + counter + "] ");
-    });
-
-    // you can use normal functions if you dont want to stop/remove the listener from itself
-    var sample_ev2 = function() {
-        ++counter;
-
-        assert.equal(counter, 3, "[" + event + "]sample_ev2 error [" + counter + "] ");
-    }
-    var once = 0;
-    // you can use normal functions if you dont want to stop/remove the listener from itself
-    var sample_once_ev3 = function() {
-        assert.equal(++once, 1, "[" + event + "]sample_once_ev3 error [" + once + "] ");
-    }
-
-
-    var emitter = new $.Events();
-
-    emitter.on("go", sample_ev0);
-    emitter.on("go", sample_ev1);
-    emitter.on("go", sample_ev2);
-    emitter.once("go", sample_once_ev3);
-
-    emitter.emit(event);
-
-    assert.equal(counter, 3, "[" + event + "]after emit error [" + counter + "] ");
-
-    setTimeout(function() {
-        assert.equal(counter, 4, "[" + event + "]after 1000ms error [" + counter + "] ");
-
-        assert.equal(emitter.is_listened("go"), 2, "[" + event + "] should be at 2 listeners");
-        emitter.off("go", sample_ev1);
-        assert.equal(emitter.is_listened("go"), 1, "[" + event + "] should be at 1 listeners");
-        emitter.off("go", sample_ev2);
-        assert.equal(emitter.is_listened("go"), false, "[" + event + "] should be at 0 listeners");
-
-        emitter.emit(event); //should no emit new events!
-    }, 1000);
-};
-
-test_event("go");
-//patterns!
-test_event("g*");
 
 
 // typeof test
