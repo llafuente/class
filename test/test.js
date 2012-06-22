@@ -31,15 +31,16 @@ var Dog = new $.Class("Dog", {
 Dog.implements({
     bite: function(where) {
         return "Dog bites!";
+    },
+    speak: function() {
+        return "bark";
     }
 });
 
 var d = new Dog();
 
 
-if( "Dog bites!" != d.bite()) {
-    throw "Dog didnt byte! " + d.bite();
-}
+assert.equal(d.bite(), "Dog bites!", "Dog bite error: " + d.bite());
 
 //--------
 // extends
@@ -53,15 +54,18 @@ Kitty.extends(Dog, false); //false means do not override properties!
 Kitty.implements({
     bite: function() {
         return "Kitty bites!";
+    },
+    speak: function() { // use of parent
+        return "cant " + this.parent() + ", I meow";
     }
 });
 
 
 var k = new Kitty();
 
-if( "Kitty bites!" != k.bite()) {
-    throw "Kitty didnt byte properly! " + k.bite();
-}
+assert.equal(k.bite(), "Kitty bites!", "Kitty bite error: " + k.bite());
+assert.equal(k.speak(), "cant bark, I meow", "Kitty speak error: " + k.speak());
+
 //---------
 // abstract
 //---------
@@ -107,9 +111,7 @@ Whale.implements({
 
 var w = new Whale(); // ok now :)
 
-if( "kill me!" != w.bite()) {
-    throw "Whale didnt byte properly! " + w.bite();
-}
+assert.equal(w.bite(), "kill me!", "Whale bite error: " + w.bite());
 
 //--------
 //aliasing
@@ -175,7 +177,7 @@ if (!deep_equal(w.serialize(true), //serialize with private vars
 //
 // events - basic flow control
 //
-(function() {
+function test_event(event) {
     var counter = 0;
 
     var sample_ev0 = $.Eventize(function() {
@@ -190,25 +192,19 @@ if (!deep_equal(w.serialize(true), //serialize with private vars
     var sample_ev1 = $.Eventize(function() {
         ++counter;
 
-        if (counter != 2) {
-            throw "event fail!";
-        }
+        assert.equal(counter, 2, "[" + event + "]sample_ev1 error [" + counter + "] ");
     });
 
     // you can use normal functions if you dont want to stop/remove the listener from itself
     var sample_ev2 = function() {
         ++counter;
 
-        if (counter != 3) {
-            throw "third!" + counter;
-        }
+        assert.equal(counter, 3, "[" + event + "]sample_ev2 error [" + counter + "] ");
     }
     var once = 0;
     // you can use normal functions if you dont want to stop/remove the listener from itself
     var sample_once_ev3 = function() {
-        if(++once !== 1) {
-            throw "not jsut once!";
-        }
+        assert.equal(++once, 1, "[" + event + "]sample_once_ev3 error [" + once + "] ");
     }
 
 
@@ -219,39 +215,29 @@ if (!deep_equal(w.serialize(true), //serialize with private vars
     emitter.on("go", sample_ev2);
     emitter.once("go", sample_once_ev3);
 
-    emitter.emit("go");
+    emitter.emit(event);
 
-    if (counter != 3) {
-        throw "counter should be 3! one per event!";
-    }
+    assert.equal(counter, 3, "[" + event + "]after emit error [" + counter + "] ");
 
     setTimeout(function() {
-        if (counter != 4) {
-            throw "event fail!";
-        }
+        assert.equal(counter, 4, "[" + event + "]after 1000ms error [" + counter + "] ");
 
-        if(!emitter.is_listened("go")) {
-            throw "should be at 2 listeners";
-        }
+        assert.equal(emitter.is_listened("go"), 2, "[" + event + "] should be at 2 listeners");
         emitter.off("go", sample_ev1);
-        if(!emitter.is_listened("go")) {
-            throw "should be at 1 listeners";
-        }
+        assert.equal(emitter.is_listened("go"), 1, "[" + event + "] should be at 1 listeners");
         emitter.off("go", sample_ev2);
-        if(emitter.is_listened("go")) {
-            throw "should be at 0 listeners";
-        }
+        assert.equal(emitter.is_listened("go"), false, "[" + event + "] should be at 0 listeners");
 
-        emitter.emit("go");
+        emitter.emit(event); //should no emit new events!
     }, 1000);
+};
 
-
-
-}());
+test_event("go");
+//patterns!
+test_event("g*");
 
 
 // typeof test
-
 assert.equal($.typeof(new Date()), "date", "type of string fail");
 
 assert.equal($.typeof("string"), "string", "type of string fail");
@@ -260,8 +246,11 @@ assert.equal($.typeof(new Array(1)), "array", "type of array fail");
 assert.equal($.typeof(1), "number", "number 1 fail");
 assert.equal($.typeof(1.0), "number", "number 1.0 fail");
 assert.equal($.typeof(NaN), "null", "Nan fail");
-assert.equal($.typeof(null), "null", "null fail");
+assert.equal($.typeof(false), "boolean", "boolean fail");
 assert.equal($.typeof(undefined), "null", "undefined fail");
+assert.equal($.typeof(null), "null", "null fail");
+assert.equal($.typeof(true), "boolean", "boolean fail");
+assert.equal($.typeof({}), "object", "object fail");
 (function() {
 assert.equal($.typeof(arguments), "arguments", "undefined fail");
 }());
@@ -273,6 +262,25 @@ assert.equal($.typeof(arguments), "arguments", "undefined fail");
 (function() {
 assert.equal($.typeof(arguments), "arguments", "undefined fail");
 }(1, 1));
+
+assert.equal($.typeof(d), "Dog", "class name fail");
+assert.equal($.typeof(k), "Kitty", "class name fail");
+assert.equal($.typeof(w), "Whale", "class name fail");
+
+
+assert.equal($.instanceof(d, "Dog"), true, "class name fail");
+assert.equal($.instanceof(d, "Class"), true, "class name fail");
+
+assert.equal($.instanceof(k, "Kitty"), true, "class name fail");
+assert.equal($.instanceof(k, "Class"), true, "class name fail");
+
+assert.equal($.instanceof(w, "Animal"), true, "class name fail");
+assert.equal($.instanceof(w, "Class"), true, "class name fail");
+assert.equal($.instanceof(w, "Whale"), true, "class name fail");
+
+assert.equal($.instanceof(Dog, "Dog"), true, "class name fail");
+assert.equal($.instanceof(Kitty, "Kitty"), true, "class name fail");
+assert.equal($.instanceof(Whale, "Whale"), true, "class name fail");
 
 
 

@@ -27,6 +27,9 @@ var Dog = new $.Class("Dog", {
 Dog.implements({
     bite: function(where) {
         return "Dog bites!";
+    },
+    speak: function() {
+        return "bark";
     }
 });
 
@@ -51,13 +54,17 @@ Kitty.extends(Dog, false); //false means do not override properties!
 Kitty.implements({
     bite: function() {
         return "Kitty bites!";
+    },
+    speak: function() { // use of parent
+        return "cant " + this.parent() + ", I meow";
     }
 });
 
 var k = new Kitty();
 
-k.bite(); // console: Dog bites!
-d.bite(); // console: Kitty bites!
+console.log(k.bite()); // console: Dog bites!
+console.log(d.bite()); // console: Kitty bites!
+console.log(k.speak()); // console: "cant bark, I meow"
 
 ```
 
@@ -145,27 +152,44 @@ HOWTO: instanceof & typeof
 
 ``` js
 // using the "Finale methods" classes
-var a = new Animal();
-$.instanceOf(a, "Animal") -> true
 
-var d = new Dog();
-$.instanceOf(d, "Dog") -> true
-$.instanceOf(d, "Animal") -> true
+// instanceof on Class
+console.log($.instanceof(Dog, "Dog"));  // console: "true"
+console.log($.instanceof(Kitty, "Kitty"));  // console: "true"
+console.log($.instanceof(Whale, "Whale"));  // console: "true"
+
+// instanceof on Class instances
+console.log($.instanceof(d, "Dog"));    // console: "true"
+console.log($.instanceof(d, "Class"));  // console: "true"
+console.log($.instanceof(k, "Kitty"));  // console: "true"
+console.log($.instanceof(k, "Class"));  // console: "true"
+console.log($.instanceof(w, "Whale"));  // console: "true"
+console.log($.instanceof(w, "Animal")); // console: "true"
+console.log($.instanceof(w, "Class"));  // console: "true"
+
+// typeof on js types
+console.log($.typeof("string"))    // console: "string"
+console.log($.typeof([]))          // console: "array"
+console.log($.typeof(new Array(1)) // console: "array"
+console.log($.typeof(1))           // console: "number"
+console.log($.typeof(1.0))         // console: "number"
+console.log($.typeof(NaN))         // console: "null"
+console.log($.typeof(null))        // console: "null"
+console.log($.typeof(undefined))   // console: "null", maybe change...
+console.log($.typeof(true))        // console: "boolean"
+console.log($.typeof(false))       // console: "boolean"
+console.log($.typeof({}))          // console: "object"
+console.log($.typeof(new Date()))  // console: "date"
+
+(function() {
+console.log($.typeof(arguments)) // console: "arguments"
+}());
 
 
-$.typeOf([]) -> array
-$.typeOf({}) -> object
-$.typeOf(1) -> number
-$.typeOf(NaN) -> null
-$.typeOf(null) -> null
-$.typeOf(undefined) -> null // maybe changed!
-$.typeOf(true) -> boolean
-$.typeOf(false) -> boolean
-$.typeOf(argumments) -> arguments
-
-$.typeOf(a) -> Animal
-$.typeOf(b) -> Dog
-
+// typeof on Class instances
+console.log($.typeof(d))          // console: "Dog"
+console.log($.typeof(k))          // console: "Kitty"
+console.log($.typeof(w))          // console: "Whale"
 
 ```
 
