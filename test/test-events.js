@@ -47,21 +47,21 @@ function test_event(event) {
 
     var emitter = new $.Events();
 
-    console.log(emitter, emitter.is_listened("go"));
+    console.log(emitter, emitter.has_listener("go"));
 
-    assert.equal(emitter.is_listened("go"), false, "[" + event + "] should be at false listeners");
+    assert.equal(emitter.has_listener("go"), false, "[" + event + "] should be at false listeners");
 
     emitter.on("go", sample_ev0);
-    assert.equal(emitter.is_listened("go"), 1, "[" + event + "] should be at 1 listeners");
+    assert.equal(emitter.has_listener("go"), 1, "[" + event + "] should be at 1 listeners");
 
     emitter.on("go", sample_ev1);
-    assert.equal(emitter.is_listened("go"), 2, "[" + event + "] should be at 2 listeners");
+    assert.equal(emitter.has_listener("go"), 2, "[" + event + "] should be at 2 listeners");
 
     emitter.on("go", sample_ev2);
-    assert.equal(emitter.is_listened("go"), 3, "[" + event + "] should be at 3 listeners");
+    assert.equal(emitter.has_listener("go"), 3, "[" + event + "] should be at 3 listeners");
 
     emitter.once("go", sample_once_ev3);
-    assert.equal(emitter.is_listened("go"), 4, "[" + event + "] should be at 4 listeners");
+    assert.equal(emitter.has_listener("go"), 4, "[" + event + "] should be at 4 listeners");
 
     console.log(emitter);
 
@@ -72,11 +72,11 @@ function test_event(event) {
     setTimeout(function() {
         assert.equal(counter, 4, "[" + event + "]after 1000ms error [" + counter + "] ");
 
-        assert.equal(emitter.is_listened("go"), 2, "[" + event + "] should be at 2 listeners");
+        assert.equal(emitter.has_listener("go"), 2, "[" + event + "] should be at 2 listeners");
         emitter.off("go", sample_ev1);
-        assert.equal(emitter.is_listened("go"), 1, "[" + event + "] should be at 1 listeners");
+        assert.equal(emitter.has_listener("go"), 1, "[" + event + "] should be at 1 listeners");
         emitter.off("go", sample_ev2);
-        assert.equal(emitter.is_listened("go"), false, "[" + event + "] should be at 0 listeners");
+        assert.equal(emitter.has_listener("go"), false, "[" + event + "] should be at 0 listeners");
 
         emitter.emit(event); //should no emit new events!
     }, 1000);
