@@ -155,8 +155,6 @@ HOWTO: instanceof & typeof
 ===================
 
 ``` js
-// using the "Finale methods" classes
-
 // instanceof on Class
 console.log($.instanceof(Dog, "Dog"));  // console: "true"
 console.log($.instanceof(Kitty, "Kitty"));  // console: "true"
@@ -170,6 +168,11 @@ console.log($.instanceof(k, "Class"));  // console: "true"
 console.log($.instanceof(w, "Whale"));  // console: "true"
 console.log($.instanceof(w, "Animal")); // console: "true"
 console.log($.instanceof(w, "Class"));  // console: "true"
+
+// typeof on Class instances
+console.log($.typeof(d))          // console: "Dog"
+console.log($.typeof(k))          // console: "Kitty"
+console.log($.typeof(w))          // console: "Whale"
 
 // typeof on js types
 console.log($.typeof("string"))    // console: "string"
@@ -188,12 +191,6 @@ console.log($.typeof(new Date()))  // console: "date"
 (function() {
 console.log($.typeof(arguments)) // console: "arguments"
 }());
-
-
-// typeof on Class instances
-console.log($.typeof(d))          // console: "Dog"
-console.log($.typeof(k))          // console: "Kitty"
-console.log($.typeof(w))          // console: "Whale"
 
 ```
 
