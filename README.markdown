@@ -30,12 +30,16 @@ Dog.implements({
     },
     speak: function() {
         return "bark";
+    },
+    toString: function() {
+        return "I'm a Dog";
     }
 });
 
 var d = new Dog();
 
 console.log(k.bite()); // console: Dog bites!
+console.log("" + k); // console: I'm a Dog
 
 ```
 
@@ -193,6 +197,37 @@ console.log($.typeof(w))          // console: "Whale"
 
 ```
 
+HOWTO: Hide methods (no enumerable)
+==================================================
+
+@Note! All methods that Class put in the final object, like serialize/deserialize are hidden.
+
+``` js
+
+var Mole = new $.Class("Mole", {
+    __bite_power: -1
+});
+
+Mole.implements({
+    bite: function() {
+        return "you can see a mole when bite you!";
+    }
+});
+
+Mole.hide(["bite"]);
+
+var m = new Mole();
+
+// This way you can hide all methods an have a clean console.log without .serialize()
+// I know you are lazy
+console.log(m); // console: { __bite_power: -1 }
+
+// also hided from the "Class"
+console.log(Mole);
+
+
+```
+
 HOWTO: serialization & properties init
 ===============================
 
@@ -224,7 +259,7 @@ With [npm](http://npmjs.org) do:
 
 ```
 
-npm install class
+npm install node-class
 
 ```
 

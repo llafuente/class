@@ -1,9 +1,10 @@
 {
   "name": "node-class",
   "version": "0.0.1",
-  "description": "node class (Object oriented)",
+  "description": "Class system (Object oriented), focused on clean code. abstract, final, static, properties, implements, extends, de/serialize, and proper typeof and instanceof and some extra sugar",
   "main": "./index.js",
   "keywords": [
+    "abstract",
     "class",
     "instanceof",
     "typeof",

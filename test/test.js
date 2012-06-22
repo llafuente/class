@@ -34,13 +34,21 @@ Dog.implements({
     },
     speak: function() {
         return "bark";
+    },
+    toString: function() {
+        return "I'm a Dog";
     }
 });
 
+Dog.hide(["toString"]);
+
 var d = new Dog();
 
+console.log(Dog);
+console.log(d);
 
 assert.equal(d.bite(), "Dog bites!", "Dog bite error: " + d.bite());
+assert.equal("" + d, "I'm a Dog", "Dog toString error: " + d);
 
 //--------
 // extends
@@ -126,7 +134,7 @@ if( "kill me!" != w.destroy()) {
 try {
     Whale.alias("destroy", "bite");
 } catch(e) {
-    if(e.message.ondexOf("not found") === -1) {
+    if(e.message.indexOf("not found") === -1) {
         throw "what error ?¿?!";
     }
 }
@@ -294,6 +302,24 @@ while (--$.log_level) {
     $.verbose("verbose");
 }
 
+
+
+var Mole = new $.Class("Mole", {
+    __bite_power: -1
+});
+
+Mole.implements({
+    bite: function() {
+        return "you can see a mole when bite you!";
+    }
+});
+
+Mole.hide(["bite"]);
+
+console.log(Mole);
+
+var m = new Mole();
+console.log(m);
 
 
 
