@@ -1,3 +1,25 @@
+/*  test
+var obj = function() {
+    console.log("hello!!");
+};
+
+console.log(obj);
+obj.constructor = function() {
+    console.log("hell!!");
+    return this;
+}
+obj.initialize= function() {
+    console.log("hell!!");
+    return this;
+}
+
+var obj2 = new obj();
+
+console.log(obj = obj2);
+
+process.exit();
+*/
+
 var $ = require("../lib/class.js");
 var assert = require("assert");
 
@@ -7,7 +29,7 @@ var deep_equal = require("deep-equal");
 //debug
 $.log_level = 0;
 
-var Vector = new $.Class("Vector2", {
+var Vector = $.Class("Vector2", {
     x: 0,
     y: 0,
     __i: false
@@ -37,7 +59,7 @@ assert.equal(v2.__i, 15,   "constructor error __i=" + v.__i);
 
 /*
 
-var cls = new $.Class(<String:class_name>, <object:properties>);
+var cls = $.Class(<String:class_name>, <object:properties>);
 cls.implements(<Object:{key:function}>);
 cls.extends(<Class>); //could be an instanced class!
 cls.abstract(<Array[String]>); //list of method names
@@ -45,7 +67,7 @@ cls.options(<Object>); //list of method names
 
 */
 
-var Dog = new $.Class("Dog", {
+var Dog = $.Class("Dog", {
     animal: true,
     __bite_power: 10
 });
@@ -72,7 +94,7 @@ assert.equal("" + d, "I'm a Dog", "Dog toString error: " + d);
 //--------
 // extends
 //--------
-var Kitty = new $.Class("Kitty", {
+var Kitty = $.Class("Kitty", {
     __bite_power: 5
 });
 
@@ -97,7 +119,7 @@ assert.equal(k.speak(), "cant bark, I meow", "Kitty speak error: " + k.speak());
 // abstract
 //---------
 
-var Animal = new $.Class("Animal", {
+var Animal = $.Class("Animal", {
     animal: true,
     __bite_power: null
 });
@@ -114,7 +136,7 @@ try {
     }
 }
 
-var Whale = new $.Class("Whale", {
+var Whale = $.Class("Whale", {
     __bite_power: /*it's over*/ 9000 /*!!!!!!!*/
 });
 
@@ -214,9 +236,9 @@ assert.equal($.typeof(1), "number", "number 1 fail");
 assert.equal($.typeof(1.0), "number", "number 1.0 fail");
 assert.equal($.typeof(NaN), "null", "Nan fail");
 assert.equal($.typeof(false), "boolean", "boolean fail");
+assert.equal($.typeof(true), "boolean", "boolean fail");
 assert.equal($.typeof(undefined), "null", "undefined fail");
 assert.equal($.typeof(null), "null", "null fail");
-assert.equal($.typeof(true), "boolean", "boolean fail");
 assert.equal($.typeof({}), "object", "object fail");
 (function() {
 assert.equal($.typeof(arguments), "arguments", "undefined fail");
@@ -263,7 +285,7 @@ while (--$.log_level) {
 
 
 
-var Mole = new $.Class("Mole", {
+var Mole = $.Class("Mole", {
     __bite_power: -1
 });
 
@@ -273,7 +295,9 @@ Mole.implements({
     }
 });
 
-Mole.hide(["bite"]);
+// hide all methods!
+Mole.hide( Mole.get_methods() );
+
 var m = new Mole();
 var key;
 
@@ -289,6 +313,9 @@ for(key in m) {
         throw new Error("bite is found!");
     }
 }
+
+
+
 
 
 

@@ -1,9 +1,11 @@
 node-class
 ==========
 
-Class system for nodejs (ES5 required, could work on new browsers).
+Class system for nodejs (ES5 ready)
 Provide a proper clean wait to deal with spagetti code that usually polute Javascript.
 Also provide a proper typeof and instanceof.
+
+Closure are usefull but are slow, prototype is the way to go when you need performance for OOP.
 
 
 Objective
@@ -19,11 +21,13 @@ HOWTO: Creation
 
 var $ = require('class');
 
-var Dog = new $.Class("Dog", {
+// do not use new $.Class, it's supported but it's evil like eval!
+var Dog = $.Class("Dog", {
     animal: true,
     __bite_power: 10
 });
 
+// set functions, you can call implements as many times as you need.
 Dog.implements({
     bite: function(where) {
         return "Dog bites!";
@@ -36,6 +40,7 @@ Dog.implements({
     }
 });
 
+// but use new here, because sound more resiliant
 var d = new Dog();
 
 console.log(k.bite()); // console: Dog bites!
@@ -49,7 +54,7 @@ HOWTO: Extending
 
 ``` js
 // continue from above...
-var Kitty = new $.Class("Kitty", {
+var Kitty = $.Class("Kitty", {
     __bite_power: 5
 });
 
@@ -59,8 +64,8 @@ Kitty.implements({
     bite: function() {
         return "Kitty bites!";
     },
-    speak: function() { // use of parent
-        return "cant " + this.parent() + ", I meow";
+    speak: function() { // use of parent to call a function that "father" has
+        return "I cant " + this.parent() + ", I meow";
     }
 });
 
@@ -68,7 +73,7 @@ var k = new Kitty();
 
 console.log(k.bite()); // console: Dog bites!
 console.log(d.bite()); // console: Kitty bites!
-console.log(k.speak()); // console: "cant bark, I meow"
+console.log(k.speak()); // console: "I cant bark, I meow"
 
 ```
 
@@ -77,7 +82,7 @@ HOWTO: Abstract Class
 
 ``` js
 
-var Animal = new $.Class("Animal", {
+var Animal = $.Class("Animal", {
     animal: true,
     __bite_power: null
 });
@@ -88,9 +93,10 @@ Animal.abstract(["bite"]);
 try {
     new Animal(); // throws -> because its abstract!
 } catch(e) {
+    console.log(e); // check the error
 }
 
-var Whale = new $.Class("Whale", {
+var Whale = $.Class("Whale", {
     __bite_power: /*it's over*/ 9000 /*!!!!!!!*/
 });
 
@@ -100,6 +106,7 @@ Whale.extends(Animal, false); // 2nd arguments false means, do not override_opti
 try {
     new Whale(); // throws -> because bite is not implemented
 } catch(e) {
+    console.log(e); // check the error
 }
 
 Whale.implements({
@@ -201,7 +208,7 @@ HOWTO: Hide methods (no enumerable)
 
 ``` js
 
-var Mole = new $.Class("Mole", {
+var Mole = $.Class("Mole", {
     __bite_power: -1
 });
 
@@ -233,7 +240,7 @@ HOWTO: serialization & properties init
 
 ``` js
 
-var Vector = new $.Class("Vector", {
+var Vector = $.Class("Vector", {
     x: 0,
     y: 0,
     __private: true
