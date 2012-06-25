@@ -31,9 +31,6 @@ assert.equal(v2.x, 15,     "constructor error x="   + v.x  );
 assert.equal(v2.y, 15,     "constructor error y="   + v.y  );
 assert.equal(v2.__i, 15,   "constructor error __i=" + v.__i);
 
-console.log(v);
-console.log(v2);
-
 //-------------------
 // Class new & implements
 //-------------------
@@ -68,9 +65,6 @@ Dog.implements({
 Dog.hide(["toString"]);
 
 var d = new Dog();
-
-console.log(Dog);
-console.log(d);
 
 assert.equal(d.bite(), "Dog bites!", "Dog bite error: " + d.bite());
 assert.equal("" + d, "I'm a Dog", "Dog toString error: " + d);
@@ -280,11 +274,21 @@ Mole.implements({
 });
 
 Mole.hide(["bite"]);
-
-console.log(Mole);
-
 var m = new Mole();
-console.log(m);
+var key;
+
+
+for(key in Mole.prototype) {
+    if(key == "bite") {
+        throw new Error("bite is found!");
+    }
+}
+
+for(key in m) {
+    if(key == "bite") {
+        throw new Error("bite is found!");
+    }
+}
 
 
 
