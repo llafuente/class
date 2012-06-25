@@ -223,6 +223,9 @@ console.log(m); // console: { __bite_power: -1 }
 console.log(Mole);
 
 
+// @tip: hide all methods ?
+// Mole.hide( Mole.get_methods() )
+
 ```
 
 HOWTO: serialization & properties init
@@ -248,8 +251,8 @@ Sugar: Functions
 ``` js
 
 var test = function() {
-	console.log(arguments);
-	console.log(this);
+    console.log(arguments);
+    console.log(this);
 }
 
 // Function.args: prepend given arguments
