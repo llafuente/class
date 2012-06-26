@@ -39,11 +39,12 @@ function test_seq(event) {
             console.log("sequence_3");
             ++counter;
             assert.equal(counter, 3, "sequence_3 error [" + counter + "] ");
-            work.done();
+            work.done("i send you this!");
         }, 500);
     }
     // you can use normal functions if you dont want to stop/remove the listener from itself
-    var sequence_4 = function(work) {
+    var sequence_4 = function(work, message) {
+        console.log(message);
         setTimeout(function() {
             console.log("sequence_4");
             ++counter;

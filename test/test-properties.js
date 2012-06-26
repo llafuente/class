@@ -16,6 +16,7 @@ var Vector = $.Class("Vector2", {
 Vector.properties({y:1});
 
 Vector.properties({recursive: {x: 1}});
+
 Vector.properties({recursive: {y: 1}});
 
 console.log(Vector);
@@ -48,12 +49,12 @@ assert.equal(v2.emergency, true, "emergency error after init");
 // emergency is not displayed!!!!
 
 
+v2.emergency = null; // this not raise
+assert.equal(v2.emergency, true, "emergency cant be modified, seal fail ?!");
+
 console.log(v);
 console.log(v2);
 
 //mess with new properties!
 var v3 = new Vector({new_properties: 1, wtf: false});
 console.log(v3);
-
-
-
