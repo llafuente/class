@@ -54,7 +54,7 @@ function test_seq(event) {
     }
 
 
-    var sq = new $.Seq();
+    var sq = new $.Sequence();
     sq.on("work:new", function() {
         ++works;
     });
