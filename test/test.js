@@ -1,26 +1,5 @@
-/*  test
-var obj = function() {
-    console.log("hello!!");
-};
+var $ = require("../index.js");
 
-console.log(obj);
-obj.constructor = function() {
-    console.log("hell!!");
-    return this;
-}
-obj.initialize= function() {
-    console.log("hell!!");
-    return this;
-}
-
-var obj2 = new obj();
-
-console.log(obj = obj2);
-
-process.exit();
-*/
-
-var $ = require("../lib/class.js");
 var assert = require("assert");
 
 // nom install deep_equal @substack
@@ -240,6 +219,7 @@ assert.equal($.typeof(true), "boolean", "boolean fail");
 assert.equal($.typeof(undefined), "null", "undefined fail");
 assert.equal($.typeof(null), "null", "null fail");
 assert.equal($.typeof({}), "object", "object fail");
+assert.equal($.typeof(Infinity), "number", "object fail");
 (function() {
 assert.equal($.typeof(arguments), "arguments", "undefined fail");
 }());
@@ -315,11 +295,13 @@ for(key in m) {
 }
 
 
-
-
-
-
 /*
+Mole.implements({
+    xxx: function() {},
+});
+
+console.log(Mole);
+
 
     //Object.merge test
     var a = {x:1};

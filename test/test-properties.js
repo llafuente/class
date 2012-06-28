@@ -1,4 +1,4 @@
-var $ = require("../lib/class.js");
+var $ = require("../index.js");
 var assert = require("assert");
 
 // nom install deep_equal @substack
