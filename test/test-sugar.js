@@ -1,44 +1,58 @@
-var $ = require("../index.js");
-var assert = require("assert");
+var $ = require("../index.js"),
+    tap = require("tap"),
+    test = tap.test;
 
-// nom install deep_equal @substack
-var deep_equal = require("deep-equal");
+//setup
 
 //debug
 $.log_level = 0;
-var counter = 0;
-var test = function() {
-    ++counter;
 
-    return {
-        "arguments": Array.from(arguments)
+var counter = 0,
+    test_fn = function() {
+        ++counter;
+
+        return {
+            "arguments": Array.from(arguments)
+        };
+        console.log(this);
     };
-    console.log(this);
-}
+
+test("function.args", function(t) {
+
+    var t2 = test_fn.args(["say", "hello"], {iamthis: true});
+
+    t.deepEqual(t2(), { arguments: [ "say", "hello" ] }, "args error");
+
+    t.deepEqual(t2("thidparam!"), { arguments: [ "say", "hello", "thidparam!" ] }, "args error 3");
+
+    t.end();
+});
+
+test("function.pass", function(t) {
+    var t3 = test_fn.pass(["dont mind your args"], {whoami: "root"});
+
+    t.deepEqual(t3(), { arguments: ["dont mind your args"] }, "pass error");
+    t.deepEqual(t3("second - is not displayed!"), { arguments: ["dont mind your args"] }, "pass error");
+
+    t.end();
+});
 
 
-var t2 = test.args(["say", "hello"], {iamthis: true});
+test("function.throttle & function.periodical", function(t) {
 
-assert.equal(deep_equal(t2(), { arguments: [ "say", "hello" ] }), true, "args error");
+    counter = 0;
 
-assert.equal(deep_equal(t2("thidparam!"), { arguments: [ "say", "hello", "thidparam!" ] }), true, "args error 3");
+    var t4 = test_fn.throttle(1000);
+    var inter = t4.periodical(50);
 
+    setTimeout(function() {
+        t.equal(counter, 2, "sequence_1 error [" + counter + "] ");
+        clearInterval(inter);
+        t.end();
+    }, 1500);
 
-var t3 = test.pass(["dont mind your args"], {whoami: "root"});
+});
 
-assert.equal(deep_equal(t3(), { arguments: ["dont mind your args"] }), true, "pass error");
-assert.equal(deep_equal(t3("second - is not displayed!"), { arguments: ["dont mind your args"] }), true, "pass error");
-
-
-counter = 0;
-
-var t4 = test.throttle(1000);
-var inter = t4.periodical(50);
-
-setTimeout(function() {
-    assert.equal(counter, 2, "sequence_1 error [" + counter + "] ");
-    clearInterval(inter);
-}, 1500);
 
 
 

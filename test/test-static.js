@@ -1,8 +1,8 @@
-var $ = require("../index.js");
-var assert = require("assert");
+var $ = require("../index.js"),
+    tap = require("tap"),
+    test = tap.test;
 
-// nom install deep_equal @substack
-var deep_equal = require("deep-equal");
+//setup
 
 //debug
 $.log_level = 0;
@@ -21,8 +21,13 @@ Vector.static({
 var a = new Vector({x:5, y:5});
 var b = new Vector({x:5, y:5});
 
-assert.equal(deep_equal(a, {x:5, y:5} ), true, "a ?");
-assert.equal(deep_equal(b, {x:5, y:5} ), true, "b ?");
-assert.equal(deep_equal(Vector.plus(a, b), {x:10, y:10} ), true, "plus is ok!");
-assert.equal(deep_equal(a, {x:5, y:5} ), true, "a has changed");
-assert.equal(deep_equal(b, {x:5, y:5} ), true, "b has changed");
+
+test("static test", function(t){
+    t.deepEqual(a, {x:5, y:5}, "a ?");
+    t.deepEqual(b, {x:5, y:5}, "b ?");
+    t.deepEqual(Vector.plus(a, b), {x:10, y:10}, "plus is ok!");
+    t.deepEqual(a, {x:5, y:5}, "a has changed");
+    t.deepEqual(b, {x:5, y:5}, "b has changed");
+
+    t.end();
+});

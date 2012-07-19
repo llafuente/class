@@ -1,8 +1,8 @@
-var $ = require("../index.js");
-var assert = require("assert");
+var $ = require("../index.js"),
+    tap = require("tap"),
+    test = tap.test;
 
-// nom install deep_equal @substack
-var deep_equal = require("deep-equal");
+//setup
 
 //debug
 $.log_level = 0;
@@ -19,42 +19,46 @@ Vector.properties({recursive: {x: 1}});
 
 Vector.properties({recursive: {y: 1}});
 
-console.log(Vector);
+var v = new Vector({x:10, y:10, recursive: {x:10}}),
+    v2 = new Vector({x:10, y:10, recursive: {x:10}, cloned: v});
 
-assert.equal(Vector.prototype.x, 1,               "x error");
-assert.equal(Vector.prototype.y, 1,               "y error");
-assert.equal(Vector.prototype.recursive.x, 1,     "recursive.x error");
-assert.equal(Vector.prototype.recursive.y, 1,     "recursive.y error");
+test("properties test", function(t) {
+    t.equal(Vector.prototype.x, 1,               "x error");
+    t.equal(Vector.prototype.y, 1,               "y error");
+    t.equal(Vector.prototype.recursive.x, 1,     "recursive.x error");
+    t.equal(Vector.prototype.recursive.y, 1,     "recursive.y error");
 
-assert.equal(Vector.prototype.cloned, null,     "cloned error");
+    t.equal(Vector.prototype.cloned, null,     "cloned error");
 
+    t.end();
+});
 
-var v = new Vector({x:10, y:10, recursive: {x:10}});
-var v2 = new Vector({x:10, y:10, recursive: {x:10}, cloned: v});
+test("properties test instanced 2", function(t) {
+    t.equal(v.x, 10, "x error init");
+    t.equal(v.y, 10, "y error init");
+    t.equal(v.recursive.x, 10, "recursive.x error init");
+    t.equal(v.recursive.y, 1, "recursive.y error init");
 
-assert.equal(v.x, 10, "x error init");
-assert.equal(v.y, 10, "y error init");
-assert.equal(v.recursive.x, 10, "recursive.x error init");
-assert.equal(v.recursive.y, 1, "recursive.y error init");
+    t.equal(v.cloned, null, "cloned error init");
 
-assert.equal(v.cloned, null, "cloned error init");
+    t.deepEqual(v2.cloned, v, "cloned error init");
 
-assert.equal(deep_equal(v2.cloned, v), true, "cloned error init");
+    t.end();
+});
 
+test("properties add after instanced", function(t) {
+    Vector.properties({emergency: true});
 
-Vector.properties({emergency: true});
+    t.equal(v.emergency, true, "emergency error after init");
+    t.equal(v2.emergency, true, "emergency error after init");
 
-assert.equal(v.emergency, true, "emergency error after init");
-assert.equal(v2.emergency, true, "emergency error after init");
-// emergency is not displayed!!!!
+    t.end();
+});
 
+test("properties seal fail if instanced before!", function(t) {
+    v2.emergency = null; // this not raise
+    t.equal(v2.emergency, true, "emergency cant be modified, seal fail ?!");
 
-v2.emergency = null; // this not raise
-assert.equal(v2.emergency, true, "emergency cant be modified, seal fail ?!");
+    t.end();
+});
 
-console.log(v);
-console.log(v2);
-
-//mess with new properties!
-var v3 = new Vector({new_properties: 1, wtf: false});
-console.log(v3);
