@@ -250,6 +250,7 @@ test("typeof", function(t) {
     t.equal($.typeof(null), "null", "null fail");
     t.equal($.typeof({}), "object", "object fail");
     t.equal($.typeof(Infinity), "number", "object fail");
+    t.equal($.typeof(/^a$/), "regexp", "object fail");
 
     (function() {
     t.equal($.typeof(arguments), "arguments", "undefined fail");

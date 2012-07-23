@@ -8,26 +8,39 @@ var $ = require("../index.js"),
 $.log_level = 0;
 
 var Vector = $.Class("Vector", {
-    x: 0,
-    y: 0
-});
+        x: 0,
+        y: 0,
+        style: "left: 0px; top: 0px;"
+    }),
+    cfg;
 
 Vector.extends($.Animate, true, true);
 
-Vector.setAnimationProterties("x", {
-    mask: "@i",
+cfg = Vector.setAnimationProterties("x", {
+    mask: "@d",
     type: "number"
 });
 
-Vector.setAnimationProterties("y", {
-    mask: "@i",
+cfg = Vector.setAnimationProterties("y", {
+    mask: "@d",
     type: "number"
 });
+
+cfg = Vector.setAnimationProterties("style", {
+    mask: "left: @dpx; top: @dpx;",
+    type: "number"
+});
+/*
+console.log(cfg);
+console.log("left: 100px; top: 500px;".match(cfg.maskRegExp));
+process.exit();
+*/
 
 test("x animation integer 1", function(t) {
     var v = new Vector();
 
     v.once("animation:start", function() {
+        console.log("start type: ", $.typeof(v.x));
         t.equal(v.x, 10);
     });
 
@@ -121,6 +134,33 @@ test("x,y animation integer 1", function(t) {
         "100%": {
             x:100,
             y:100
+        }
+    });
+});
+
+
+test("style animation masked", function(t) {
+    var v = new Vector();
+
+    v.once("animation:start", function() {
+        t.equal(v.style, "left: 0px; top: 0px;");
+    });
+
+    v.once("animation:end", function() {
+    console.log("!!!", v.style);
+        t.equal(v.style, "left: 100px; top: 150px;");
+        t.end();
+    });
+
+    //run!
+    v.animate({
+        transition: $.Animate.Transitions.linear,
+        time: 5000,
+        fps: 1,
+        queue: true
+    }, {
+        "100%": {
+            style: "left: 100px; top: 150px;"
         }
     });
 });
