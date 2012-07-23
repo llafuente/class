@@ -15,17 +15,16 @@ var Vector = $.Class("Vector", {
 Vector.extends($.Animate, true, true);
 
 Vector.setAnimationProterties("x", {
-    mask: "@",
+    mask: "@i",
     type: "number"
 });
 
 Vector.setAnimationProterties("y", {
-    mask: "@",
+    mask: "@i",
     type: "number"
 });
 
-test("animation.integer", function(t) {
-    console.log(Vector);
+test("x animation integer 1", function(t) {
     var v = new Vector();
 
     v.once("animation:start", function() {
@@ -33,9 +32,108 @@ test("animation.integer", function(t) {
     });
 
     v.once("animation:end", function() {
-        console.log("first animation end!");
-
         t.equal(v.x, 100);
+        t.end();
+    });
+
+    //run!
+    v.animate({
+        property: "x",
+        transition: $.Animate.Transitions.linear,
+        time: 5000,
+        fps: 1,
+        queue: true
+    }, [10, 100]);
+});
+
+
+test("x animation integer 2", function(t) {
+    var v = new Vector();
+
+    v.once("animation:start", function() {
+        t.equal(v.x, 0);
+    });
+
+    v.once("animation:end", function() {
+        t.equal(v.x, 200);
+        t.end();
+    });
+
+    //run!
+    v.animate({
+        property: "x",
+        transition: $.Animate.Transitions.linear,
+        time: 5000,
+        fps: 1,
+        queue: true
+    }, 200);
+});
+
+test("x animation integer 3", function(t) {
+    var v = new Vector();
+
+    v.once("animation:start", function() {
+        t.equal(v.x, 100);
+    });
+
+    v.once("animation:end", function() {
+        t.equal(v.x, 500);
+        t.end();
+    });
+
+    //run!
+    v.animate({
+        property: "x",
+        transition: $.Animate.Transitions.linear,
+        time: 5000,
+        fps: 1,
+        queue: true
+    }, {from: 100, to: 500});
+});
+
+
+test("x,y animation integer 1", function(t) {
+    var v = new Vector();
+
+    v.once("animation:start", function() {
+        t.equal(v.x, 0);
+        t.equal(v.y, 0);
+    });
+
+    v.once("animation:end", function() {
+        t.equal(v.x, 100);
+        t.equal(v.y, 100);
+        t.end();
+    });
+
+    //run!
+    v.animate({
+        property: "x",
+        transition: $.Animate.Transitions.linear,
+        time: 5000,
+        fps: 1,
+        queue: true
+    }, {
+        "50%": {
+            x: -50,
+            y: -50
+        },
+        "100%": {
+            x:100,
+            y:100
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+/*
 
         v.animate({
             property: "x",
@@ -43,7 +141,7 @@ test("animation.integer", function(t) {
             time: 5000,
             fps: 1,
             queue: true
-        }, 200);
+        }, );
 
         v.once("animation:end", function() {
             t.equal(v.x, 200);
@@ -63,21 +161,10 @@ test("animation.integer", function(t) {
             v.once("animation:end", function() {
                 t.equal(v.x, 150);
 
-                t.end();
+
             });
         });
 
     });
 
-
-    //run!
-    v.animate({
-        property: "x",
-        transition: $.Animate.Transitions.linear,
-        time: 5000,
-        fps: 1,
-        queue: true
-    }, [10, 100]);
-});
-
-
+*/
