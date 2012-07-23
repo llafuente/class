@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+  <html lang="en" dir="ltr" >
+<head>
+  <title>Animation test</title>
+  <script src="../lib/tempus.js"></script>
+  <script src="../lib/class.js"></script>
+  <script src="../lib/extend_js.js"></script>
+  <script src="../lib/eventize.js"></script>
+  <script src="../lib/events.js"></script>
+  <script src="../lib/sequence.js"></script>
+  <script src="../lib/animate.js"></script>
+  <style>
+    .square-start {
+        border: 1px solid red;
+        position: absolute;
+        left: 50px;
+        width: 50px;
+        height: 50px;
+    }
+    .square-end {
+        border: 1px solid blue;
+        position: absolute;
+        left: 500px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .readme {
+        position: absolute;
+        left: 250px;
+    }
+  </style>
+</head>
+<body>
+
+
+</body>
+  <script>
+    var PositionWrapper = $.Class("PositionWrapper", {
+        element: null,
+        top: 0,
+        left: 0,
+        _top: 0,
+        _left: 0
+    });
+
+    PositionWrapper.extends($.Animate, true, true);
+
+    PositionWrapper.setAnimationProterties("top", {
+        mask: "@d",
+        type: "number"
+    });
+    PositionWrapper.setAnimationProterties("left", {
+        mask: "@d",
+        type: "number"
+    });
+
+
+    Object.defineProperty(PositionWrapper.prototype, "top", {
+        get: function() {
+            return this._top;
+        },
+        set : function(newValue) {
+            try {
+                this.element.style.top = (newValue)+"px";
+            } catch(e) {
+            }
+            this._top = newValue;
+            return newValue;
+        }
+    });
+
+    Object.defineProperty(PositionWrapper.prototype, "left", {
+        get: function() {
+            return this._left;
+        },
+        set : function(newValue) {
+            try {
+                this.element.style.left = (newValue)+"px";
+            } catch(e) {
+            }
+            this._left = newValue;
+            return newValue;
+        }
+    });
+
+    var k = Object.keys($.Animate.Transitions);
+
+    k.forEach(function(key, i) {
+        var d = document.createElement("div");
+        d.id = "start-" + key;
+        d.className = "square-start";
+
+        var dw = new PositionWrapper({
+            element: d,
+            top: (i * 60)
+        });
+
+        document.body.appendChild(d);
+
+        var d2 = document.createElement("div");
+        d2.id = "end-" + key;
+        d2.className = "square-end";
+        d2.style.top = (i * 60)+"px";
+        document.body.appendChild(d2);
+
+        d.onclick = function() {
+            dw.animate({
+                property: "left",
+                transition: $.Animate.Transitions[key],
+                time: 5000,
+                fps: 15
+            }, [50, 500]);
+        }
+
+        var d3 = document.createElement("div");
+        d3.innerHTML = key;
+        d3.id = "readme-" + key;
+        d3.className = "readme";
+        d3.style.top = (i * 60) + 15 +"px";
+        document.body.appendChild(d3);
+
+    });
+
+
+  </script>
+</html>
