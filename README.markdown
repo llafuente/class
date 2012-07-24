@@ -4,32 +4,32 @@ node-class
 ==========
 
 Class system for nodejs (ES5 ready)
-Provide a proper clean wait to deal with spagetti code that usually polute Javascript.
+Object oriented class system for javascript based on prototypes.
+Provide everything you could want from Classes except private/protected with almost no performance hit.
 Also provide a proper typeof and instanceof.
 
-Closure are usefull but are slow, prototype is the way to go when you need performance for OOP.
+Has some debug code that you can remove in production to gain extra performance
 
 
 Objective
 =========
 Force coders to code in a clean way, dont allow messy code if possible...
-Developement version that throws and test many things but provide a production code that dont do that so no overhead!
+In developement the class will throw and do many sanity checks. You could remove the debug code in production to gain a bit extra performance.
 
 
-HOWTO: Creation
-========
+The Class constructor
+===============
 
 ``` js
 
 var $ = require('class');
 
-// do not use new $.Class, it's supported but it's evil like eval!
-var Dog = $.Class("Dog", {
+var Dog = $.Class("Dog", { // note: you could use new, but it's not required...
     animal: true,
     __bite_power: 10
 });
 
-// set functions, you can call implements as many times as you need.
+// set some functions
 Dog.implements({
     bite: function(where) {
         return "Dog bites!";
@@ -37,12 +37,16 @@ Dog.implements({
     speak: function() {
         return "bark";
     },
+});
+
+// note: you can call implements as many times as you need.
+Dog.implements({
     toString: function() {
         return "I'm a Dog";
     }
 });
 
-// but use new here, because sound more resiliant
+// but use new here, because sound more error resilient
 var d = new Dog();
 
 console.log(k.bite()); // console: Dog bites!
@@ -50,23 +54,25 @@ console.log("" + k); // console: I'm a Dog
 
 ```
 
-HOWTO: Extending
-=========
+Extending Classes
+================
 
 
 ``` js
-// continue from above...
+// image that continue from above...
+
 var Kitty = $.Class("Kitty", {
     __bite_power: 5
 });
 
-Kitty.extends(Dog, false); //false means do not override properties!
+Kitty.extends(Dog, false); // 2nd argument = false, means do not override properties, so __bite_power will be 5
 
 Kitty.implements({
     bite: function() {
         return "Kitty bites!";
     },
-    speak: function() { // use of parent to call a function that "father" has
+    speak: function() {
+        // use of parent to call a function that "father" has
         return "I cant " + this.parent() + ", I meow";
     }
 });
@@ -79,8 +85,8 @@ console.log(k.speak()); // console: "I cant bark, I meow"
 
 ```
 
-HOWTO: Abstract Class
-==============
+Abstract Class methods
+======================
 
 ``` js
 
@@ -91,7 +97,7 @@ var Animal = $.Class("Animal", {
 
 Animal.abstract(["bite"]);
 
-//you could try this... buts...
+//you could try this... but...
 try {
     new Animal(); // throws -> because its abstract!
 } catch(e) {
@@ -102,9 +108,9 @@ var Whale = $.Class("Whale", {
     __bite_power: /*it's over*/ 9000 /*!!!!!!!*/
 });
 
-Whale.extends(Animal, false); // 2nd arguments false means, do not override_options
+Whale.extends(Animal, false); // again remember the 2nd arguments...
 
-//you could try this... buts...
+//you could try this... but...
 try {
     new Whale(); // throws -> because bite is not implemented
 } catch(e) {
@@ -124,8 +130,8 @@ console.log(w.bite()); // console: kill me!
 ```
 
 
-HOWTO: Aliasing
-==============
+Method aliasing
+===============
 
 ``` js
 
@@ -134,7 +140,7 @@ console.log(w.destroy()); // console: kill me!
 
 ```
 
-HOWTO: Finale methods
+Finale methods
 ==============
 
 ``` js
@@ -146,7 +152,7 @@ Animal.final({
     }
 });
 
-// you should extend allways when the class is finished
+// you should extend always when the class is finished
 Whale.extends(Animal, false);
 
 try {
@@ -160,7 +166,7 @@ try {
 
 ```
 
-HOWTO: instanceof & typeof
+instanceof & typeof
 ===================
 
 ``` js
@@ -203,8 +209,8 @@ console.log($.typeof(arguments)) // console: "arguments"
 
 ```
 
-HOWTO: Hide methods (no enumerable)
-==================================================
+Hide methods (no enumerable)
+============================
 
 @Note! All methods that Class put in the final object, like serialize/deserialize are hidden.
 
@@ -238,7 +244,7 @@ console.log(Mole);
 ```
 
 HOWTO: serialization & properties init
-===============================
+======================================
 
 ``` js
 
@@ -254,8 +260,31 @@ console.log(v.serialize(true)); // {x: 10, y:10, __private: true}
 
 ```
 
-Sugar: Functions
-================
+Sugar list
+==========
+``` js
+
+Object.each // for in
+Object.merge // merge two objects, modify the first argument!!!
+Object.merge_cloning //merge and clone
+Function.prototype.pass // use the given args for every call
+Function.prototype.args // prepend given arguments
+Function.prototype.delay // delay the execution x ms
+Function.prototype.periodical // execute every x ms
+Function.prototype.debounce // execute once every x ms regardless the call count
+Function.prototype.throttle // limit the execution time, one time every x ms
+Function.prototype.once // execute once
+String.sprintf //same as c
+String.vsprintf //same as c
+Array.from // create an array given any arg
+Array.append //append ar2 to ar, return a cloned one
+Array.clone //clone an array
+Array.insertAt // insert in given position
+RegExp.escape // escape the string so it can be used inside a regex as literal
+
+```
+Sugar examples: Functions
+=========================
 
 ``` js
 
@@ -307,12 +336,26 @@ var inter = t4.periodical(50);
 
 ```
 
-================
+Classes: Events
+===============
 
-More HOWTO soon.
-================
+``` js
+var ev_manager = new $.Events(),
+    fn = function() { console.log("fired"); };
+ev_manager.on("ev", fn);
+ev_manager.emit("ev"); // console.log: fired
+// wildcard support!
+ev_manager.emit("e*"); // console.log: fired
+// remove
+ev_manager.off("ev", fn);
+console.log(ev_manager.has_listener("ev", fn)); // console.log: false
 
-check: extends_js.js it has some sugar without touching prototypes (except Function)
+```
+
+Classes: Animate & EventMachine
+===============
+
+See the webexamples :)
 
 
 Install
@@ -326,10 +369,8 @@ npm install node-class
 
 ```
 
-test
-====
-
-The test is custom made :)
+test (travis-ci ready!)
+=======================
 
 ```
 
