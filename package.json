@@ -16,14 +16,13 @@
     "lib": ".",
     "test": "test"
   },
-  "scripts": {
-    "test": "node test/test.js"
+  "scripts" : {
+    "test" : "tap test/*.js"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/llafuente/class.git"
   },
-
   "author": {
     "name": "Luis Lafuente",
     "email": "llafuente@noboxout.com",
@@ -31,7 +30,7 @@
   },
   "license": "MIT",
   "engine": {
-    "node": ">=0.6"
+    "node": ">=0.4"
   },
   "dependencies" : {},
   "devDependencies": {
