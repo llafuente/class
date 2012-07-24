@@ -20,10 +20,10 @@ var counter = 0,
 test("function.args", function(t) {
     var t2 = function() {
         t.deepEqual(Array.from(arguments), [ "say", "hello" ], "args error");
-        t.deepEqual(this, {iamthis: "root"}, "args error");
+        t.deepEqual(this, {key: "value"}, "args error");
         t.end();
 
-    }.args(["say", "hello"], {iamthis: "root"});
+    }.args(["say", "hello"], {key: "value"});
 
     t2();
 });
@@ -32,10 +32,10 @@ test("function.args", function(t) {
 test("function.args2", function(t) {
     var t2 = function() {
         t.deepEqual(Array.from(arguments), [ "say", "hello", "thidparam!" ], "args error");
-        t.deepEqual(this, {iamthis: "root"}, "args error");
+        t.deepEqual(this, {key: "value"}, "args error");
 
         t.end();
-    }.args(["say", "hello"], {iamthis: "root"});
+    }.args(["say", "hello"], {key: "value"});
 
     t2("thidparam!");
 });
@@ -43,13 +43,12 @@ test("function.args2", function(t) {
 test("function.pass", function(t) {
     var t2 = function() {
         t.deepEqual(Array.from(arguments), [ "dont mind your args" ], "args error");
-        t.deepEqual(this, {iamthis: "root"}, "args error");
-
-        t.end();
-    }.pass(["dont mind your args"], {whoami: "root"});
+        t.deepEqual(this, {key: "value"}, "args error");
+    }.pass(["dont mind your args"], {key: "value"});
 
     t2();
     t2("second - is not displayed!");
+    t.end();
 });
 
 
