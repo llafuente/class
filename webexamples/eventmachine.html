@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+  <html lang="en" dir="ltr" >
+<head>
+  <title>Animation test</title>
+  <script src="../lib/tempus.js"></script>
+  <script src="../lib/class.js"></script>
+  <script src="../lib/extend_js.js"></script>
+  <script src="../lib/eventize.js"></script>
+  <script src="../lib/events.js"></script>
+  <script src="../lib/sequence.js"></script>
+  <script src="../lib/animate.js"></script>
+  <script src="../lib/eventmachine.js"></script>
+  <style>
+    .square-start {
+        border: 1px solid red;
+        position: absolute;
+        left: 50px;
+        width: 50px;
+        height: 50px;
+    }
+    .square-end {
+        border: 1px solid blue;
+        position: absolute;
+        left: 500px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .readme {
+        position: absolute;
+        left: 250px;
+    }
+  </style>
+</head>
+<body>
+
+   <input type="text" value="" id="keyboard" />
+   <span id="last-key"></span>
+   <div id="combos"></div>
+
+</body>
+  <script>
+    var keyboard = document.getElementById("keyboard"),
+        last_key = document.getElementById("last-key"),
+        combos_container = document.getElementById("combos"),
+        highlight_combo = function(ev_name) {
+            document.getElementById(ev_name).style.background = "red";
+        },
+        combos = [
+            ["down", "down"],
+            ["up", "up"],
+            ["up_and_down", "up + down"],
+            ["half_moon", "left, down, right"]
+        ],
+        evm = new $.EventMachine();
+
+    combos.forEach(function(v, k) {
+        console.log(v[0], v[1], highlight_combo);
+        evm.on(v[0], v[1], highlight_combo);
+
+        var d = document.createElement("div");
+        d.innerHTML = v[1];
+        d.id = v[0];
+        combos_container.appendChild(d);
+    });
+
+    function get_key_name(event) { // keyboard + mouse
+        var code = (event.which || event.keyCode);
+        if (event.type == 'keydown' || event.type == 'keyup') {
+            if (code > 111 && code < 124) {
+                return key = 'f' + (code - 111);
+            } else if (code > 95 && code < 106) {
+                return this.key = code - 96;
+            }
+        }
+
+        var recodes = {
+            '38': 'up',
+            '40': 'down',
+            '37': 'left',
+            '39': 'right',
+            '27': 'esc',
+            '32': 'space',
+            '8': 'backspace',
+            '9': 'tab',
+            '46': 'delete',
+            '13': 'enter',
+            '36': 'home',
+            '35': 'end',
+            '34': 'pagedown',
+            '33': 'pageup',
+            '45': 'insert',
+            '46': 'bloqnum'
+        };
+
+        if (recodes[code]) {
+            return recodes[code];
+        }
+
+        return String.fromCharCode(code).toLowerCase();
+    }
+
+    keyboard.onkeydown = function(e) {
+        console.log(e);
+        var t = get_key_name(e);
+        console.log("keydown: ", t);
+        evm.enable(t);
+    };
+
+    keyboard.onkeyup= function(e) {
+        var t = get_key_name(e);
+        console.log("keyup: ", t);
+        evm.disable(t, false);
+    };
+
+
+  </script>
+</html>
