@@ -276,7 +276,7 @@ Function.prototype.throttle // limit the execution time, one time every x ms
 Function.prototype.once // execute once
 String.sprintf //same as c
 String.vsprintf //same as c
-Array.from // create an array given any arg
+Array.ize // create an array given any arg
 Array.append //append ar2 to ar, return a cloned one
 Array.clone //clone an array
 Array.insertAt // insert in given position
