@@ -30,17 +30,11 @@ cfg = Vector.setAnimationProterties("style", {
     mask: "left: @dpx; top: @dpx;",
     type: "number"
 });
-/*
-console.log(cfg);
-console.log("left: 100px; top: 500px;".match(cfg.maskRegExp));
-process.exit();
-*/
 
 test("x animation integer 1", function(t) {
     var v = new Vector();
 
     v.once("animation:start", function() {
-        console.log("start type: ", $.typeof(v.x));
         t.equal(v.x, 10);
     });
 
@@ -147,7 +141,6 @@ test("style animation masked", function(t) {
     });
 
     v.once("animation:end", function() {
-    console.log("!!!", v.style);
         t.equal(v.style, "left: 100px; top: 150px;");
         t.end();
     });

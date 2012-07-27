@@ -74,10 +74,11 @@ test("Array.ize", function(t) {
     t.deepEqual(Array.ize(obj), [ obj ], "ize object error");
     var num = 1000;
     t.deepEqual(Array.ize(num), [ num ], "ize number error");
-    var cls = new Class("test", {});
+    var cls = new $.Class("test", {});
     t.deepEqual(Array.ize(cls), [ cls ], "ize Class error");
     var instance = new cls;
     t.deepEqual(Array.ize(instance), [ instance ], "ize Class instance error");
+    t.end();
 });
 
 
