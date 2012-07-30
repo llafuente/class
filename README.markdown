@@ -1,6 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/llafuente/class.png?branch=master)](http://travis-ci.org/llafuente/class)
-
-node-class
+# node-class [![Build Status](https://secure.travis-ci.org/llafuente/class.png?branch=master)](http://travis-ci.org/llafuente/class)
 ==========
 
 Class system for nodejs (ES5 ready)
@@ -11,14 +9,15 @@ Also provide a proper typeof and instanceof.
 Has some debug code that you can remove in production to gain extra performance
 
 
-Objective
-=========
+## Objective
+============
+
 Force coders to code in a clean way, dont allow messy code if possible...
 In developement the class will throw and do many sanity checks. You could remove the debug code in production to gain a bit extra performance.
 
 
-The Class constructor
-===============
+## The Class constructor
+========================
 
 ``` js
 
@@ -54,9 +53,8 @@ console.log("" + k); // console: I'm a Dog
 
 ```
 
-Extending Classes
-================
-
+## Extending Classes
+====================
 
 ``` js
 // image that continue from above...
@@ -85,8 +83,8 @@ console.log(k.speak()); // console: "I cant bark, I meow"
 
 ```
 
-Abstract Class methods
-======================
+## Abstract Class methods
+=========================
 
 ``` js
 
@@ -130,8 +128,8 @@ console.log(w.bite()); // console: kill me!
 ```
 
 
-Method aliasing
-===============
+## Method aliasing
+==================
 
 ``` js
 
@@ -140,8 +138,8 @@ console.log(w.destroy()); // console: kill me!
 
 ```
 
-Finale methods
-==============
+## Finale methods
+=================
 
 ``` js
 
@@ -166,8 +164,8 @@ try {
 
 ```
 
-instanceof & typeof
-===================
+## instanceof & typeof
+======================
 
 ``` js
 // instanceof on Class
@@ -209,8 +207,8 @@ console.log($.typeof(arguments)) // console: "arguments"
 
 ```
 
-Hide methods (no enumerable)
-============================
+## Hide methods (no enumerable)
+===============================
 
 @Note! All methods that Class put in the final object, like serialize/deserialize are hidden.
 
@@ -243,8 +241,8 @@ console.log(Mole);
 
 ```
 
-HOWTO: serialization & properties init
-======================================
+## HOWTO: serialization & properties init
+=========================================
 
 ``` js
 
@@ -260,8 +258,9 @@ console.log(v.serialize(true)); // {x: 10, y:10, __private: true}
 
 ```
 
-Sugar list
-==========
+## Sugar list
+=============
+
 ``` js
 
 Object.each // for in
@@ -283,8 +282,8 @@ Array.insertAt // insert in given position
 RegExp.escape // escape the string so it can be used inside a regex as literal
 
 ```
-Sugar examples: Functions
-=========================
+## Sugar examples: Functions
+============================
 
 ``` js
 
@@ -336,8 +335,8 @@ var inter = t4.periodical(50);
 
 ```
 
-Classes: Events
-===============
+## Classes: Events
+==================
 
 ``` js
 var ev_manager = new $.Events(),
@@ -352,14 +351,14 @@ console.log(ev_manager.has_listener("ev", fn)); // console.log: false
 
 ```
 
-Classes: Animate & EventMachine
-===============
+## Classes: Animate & EventMachine
+==================================
 
 See the webexamples :)
 
 
-Install
-=======
+## Install
+==========
 
 With [npm](http://npmjs.org) do:
 
@@ -369,8 +368,8 @@ npm install node-class
 
 ```
 
-test (travis-ci ready!)
-=======================
+## test (travis-ci ready!)
+==========================
 
 ```
 
@@ -381,7 +380,7 @@ node test.js
 
 ```
 
-license
-=======
+## license
+==========
 
 MIT.
