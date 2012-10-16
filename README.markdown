@@ -194,7 +194,7 @@ try {
 ## Hide methods (no enumerable)
 ===============================
 
-@Note! All methods that Class put in the final object, like serialize/deserialize are hidden.
+Class.hide(Array method list);
 
 ``` js
 
