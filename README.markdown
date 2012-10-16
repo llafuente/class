@@ -1,35 +1,51 @@
 # node-class [![Build Status](https://secure.travis-ci.org/llafuente/class.png?branch=master)](http://travis-ci.org/llafuente/class)
 ==========
 
-Class system for nodejs (ES5 ready)
-Object oriented class system for javascript based on prototypes.
-Provide everything you could want from Classes except private/protected with almost no performance hit.
-Also provide a proper typeof and instanceof.
+## Introduction
+============
 
-Has some debug code that you can remove in production to gain extra performance
+Object Oriented for javascript based on prototypes and new shinny features in ES5.
+Do not provide private/protected properties (do not want to use eval).
+Proxy resilient (mostly...)
+Proper typeof and instanceof.
+Many Object enhacements without messing propotypes
+Function enhacements but this time, in the prototypes for easy to use.
 
 
 ## Objective
 ============
 
 Force coders to code in a clean way, dont allow messy code if possible...
-In developement the class will throw and do many sanity checks. You could remove the debug code in production to gain a bit extra performance.
+In developement the library will throw exceptions and do many sanity checks. You could remove the debug code in production to gain a bit extra performance.
 
+The debug code is "tagged" like:
 
-## The Class constructor
+``` js
+// <debug>
+assert_arg(...)
+// </debug>
+```
+
+## Coding: Class
 ========================
+
+$.Class(String name[, Object properties = null[, Object methods = null]]);
+Class.implements(Object {function_name:Function});
 
 ``` js
 
 var $ = require('class');
 
 var Dog = $.Class("Dog", { // note: you could use new, but it's not required...
-    animal: true,
-    __bite_power: 10
+    animal: true, // public
+    __bite_power: 10 // "private", it wont be setted in the constructor.
 });
 
 // set some functions
 Dog.implements({
+    __construct: function(obj) { // I know PHP-ish
+        console.log("if (obj) is an object! it will automatically be set to DEFINED properties");
+    },
     bite: function(where) {
         return "Dog bites!";
     },
@@ -46,24 +62,28 @@ Dog.implements({
 });
 
 // but use new here, because sound more error resilient
-var d = new Dog();
+var d = new Dog({animal: false, __bite_power: 500});
 
-console.log(k.bite()); // console: Dog bites!
-console.log("" + k); // console: I'm a Dog
+console.log(d.bite()); // console: Dog bites!
+console.log(d.animal); // console: false
+console.log(d.__bite_power); // console: 10
+console.log("" + d); // console: I'm a Dog
 
 ```
 
 ## Extending Classes
 ====================
 
+Class.extends(Class cls[, Boolean override_properties = true[, Boolean extend_static = true]]);
+
 ``` js
-// image that continue from above...
+// using previous code... continue
 
 var Kitty = $.Class("Kitty", {
     __bite_power: 5
 });
 
-Kitty.extends(Dog, false); // 2nd argument = false, means do not override properties, so __bite_power will be 5
+Kitty.extends(Dog, false); // Do not override properties => __bite_power will be 5
 
 Kitty.implements({
     bite: function() {
@@ -85,6 +105,8 @@ console.log(k.speak()); // console: "I cant bark, I meow"
 
 ## Abstract Class methods
 =========================
+
+Class.abstract(Array method_list)
 
 ``` js
 
@@ -131,6 +153,8 @@ console.log(w.bite()); // console: kill me!
 ## Method aliasing
 ==================
 
+Class.alias(String dst_method_name, String src_method_name);
+
 ``` js
 
 Whale.alias("destroy", "bite");
@@ -140,6 +164,8 @@ console.log(w.destroy()); // console: kill me!
 
 ## Finale methods
 =================
+
+Class.final(Object {function_name:Function});
 
 ``` js
 
@@ -159,13 +185,50 @@ try {
             return "dont mind the text, it throws!";
         }
     });
-} catch() {
+} catch(e) {
+    console.log(e);
 }
+
+```
+
+## Hide methods (no enumerable)
+===============================
+
+@Note! All methods that Class put in the final object, like serialize/deserialize are hidden.
+
+``` js
+
+var Mole = $.Class("Mole", {
+    __bite_power: -1
+});
+
+Mole.implements({
+    bite: function() {
+        return "you can see a mole when bite you!";
+    }
+});
+
+Mole.hide(["bite"]);
+
+var m = new Mole();
+
+// This way you can hide all methods an have a clean console.log without .serialize()
+// I know you are lazy
+console.log(m); // console: { __bite_power: -1 }
+
+// also hided from the "Class"
+console.log(Mole);
+
+
+// @tip: hide all methods ?
+// Mole.hide( Mole.get_methods() )
 
 ```
 
 ## instanceof & typeof
 ======================
+
+A proper implementation of instanceof and typeof is provided in good harmony with the Class system :)
 
 ``` js
 // instanceof on Class
@@ -207,42 +270,12 @@ console.log($.typeof(arguments)) // console: "arguments"
 
 ```
 
-## Hide methods (no enumerable)
-===============================
 
-@Note! All methods that Class put in the final object, like serialize/deserialize are hidden.
-
-``` js
-
-var Mole = $.Class("Mole", {
-    __bite_power: -1
-});
-
-Mole.implements({
-    bite: function() {
-        return "you can see a mole when bite you!";
-    }
-});
-
-Mole.hide(["bite"]);
-
-var m = new Mole();
-
-// This way you can hide all methods an have a clean console.log without .serialize()
-// I know you are lazy
-console.log(m); // console: { __bite_power: -1 }
-
-// also hided from the "Class"
-console.log(Mole);
-
-
-// @tip: hide all methods ?
-// Mole.hide( Mole.get_methods() )
-
-```
 
 ## HOWTO: serialization & properties init
 =========================================
+
+(Class Object).serialize([Boolean include_private])
 
 ``` js
 
@@ -255,6 +288,8 @@ var Vector = $.Class("Vector", {
 var v = new Vector({x: 10, y:10});
 console.log(v.serialize()); // {x: 10, y:10}
 console.log(v.serialize(true)); // {x: 10, y:10, __private: true}
+
+// unserialize is wip
 
 ```
 
