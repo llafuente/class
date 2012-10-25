@@ -19,6 +19,8 @@ Vector.properties({recursive: {x: 1}});
 
 Vector.properties({recursive: {y: 1}});
 
+Vector.seal();
+
 var v = new Vector({x:10, y:10, recursive: {x:10}}),
     v2 = new Vector({x:10, y:10, recursive: {x:10}, cloned: v});
 
