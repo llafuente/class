@@ -2,8 +2,6 @@ var $ = require("../index.js"),
     tap = require("tap"),
     test = tap.test;
 
-//setup
-
 //debug
 $.log_level = 0;
 
@@ -33,9 +31,6 @@ Dog.implements({
         return "I'm a Dog";
     }
 });
-
-Dog.hide(["toString"]);
-
 
 var Kitty = $.Class("Kitty", {
     __bite_power: 5
@@ -74,16 +69,13 @@ var Mole = $.Class("Mole", {
     __bite_power: -1
 });
 
+Mole.extends(Animal, false);
+
 Mole.implements({
     bite: function() {
         return "you can see a mole when bite you!";
     }
 });
-
-// hide all methods!
-Mole.hide( Mole.get_methods() );
-
-
 
 //
 // -------------------------------------
@@ -294,16 +286,15 @@ test("instanceof", function(t) {
     t.end();
 });
 
-test("hide methods", function(t) {
-    var m = new Mole();
-    var key;
 
-    for(key in Mole.prototype) {
-        t.notEqual(key, "bite");
-    }
 
-    for(key in m) {
-        t.notEqual(key, "bite");
+test("hide propertoes", function(t) {
+    var m = new Mole(),
+        v = new Vector(),
+        key;
+
+    for(key in v) {
+        t.notEqual(key, "__i", "Vector is not hidden");
     }
 
     t.end();
