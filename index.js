@@ -1,6 +1,7 @@
 (function (exports, browser) {
     "use strict";
 
+    require("function-enhancements");
     // vanilla
     module.exports = require("./lib/class.js");
 
