@@ -85,4 +85,56 @@ test("test event g*", function(t) {
     test_event("g*", t);
 });
 
+test("on_unhandled_event", function(t) {
+    var emitter = new $.Events(),
+        count_unhandled = 0,
+        count_test = 0;
+    emitter.on_unhandled_event(function() {
+        ++count_unhandled;
+    });
 
+    emitter.emit("test");
+
+    emitter.on("test", function() {
+        ++count_test;
+    });
+
+    emitter.emit("test");
+
+    t.equal(count_unhandled, 1, "unhandled called one time");
+    t.equal(count_test, 1, "test called one time");
+
+    t.end();
+});
+
+
+
+test("pipe_events", function(t) {
+    var emitter = new $.Events(),
+        emitter2 = new $.Events(),
+        count_unhandled = 0,
+        count_test = 0,
+        count_unhandled2 = 0;
+
+    emitter.pipe_events(emitter2);
+    emitter.on_unhandled_event(function() {
+        ++count_unhandled;
+    });
+    emitter2.on_unhandled_event(function() {
+        ++count_unhandled2;
+    });
+
+    emitter.emit("test");
+
+    emitter.on("test", function() {
+        ++count_test;
+    });
+
+    emitter.emit("test");
+
+    t.equal(count_unhandled, 1, "unhandled called one time");
+    t.equal(count_test, 1, "test called one time");
+    t.equal(count_unhandled2, 2, "unhandled2 called two times");
+
+    t.end();
+});
