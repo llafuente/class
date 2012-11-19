@@ -108,7 +108,6 @@ test("on_unhandled_event", function(t) {
 });
 
 
-
 test("pipe_events", function(t) {
     var emitter = new $.Events(),
         emitter2 = new $.Events(),
@@ -117,6 +116,7 @@ test("pipe_events", function(t) {
         count_unhandled2 = 0;
 
     emitter.pipe_events(emitter2);
+
     emitter.on_unhandled_event(function() {
         ++count_unhandled;
     });
@@ -135,6 +135,31 @@ test("pipe_events", function(t) {
     t.equal(count_unhandled, 1, "unhandled called one time");
     t.equal(count_test, 1, "test called one time");
     t.equal(count_unhandled2, 2, "unhandled2 called two times");
+
+    t.end();
+});
+
+
+test("error events throw", function(t) {
+    var emitter = new $.Events(),
+        count = 0;
+
+    try {
+        emitter.emit("error", "wtf!");
+        t.equal(true, false, "Events throw, is ok");
+    } catch(e) {
+        t.equal(true, true, "Events throw, is ok");
+    }
+
+
+    emitter.on_unhandled_event(function() {
+        ++count;
+    });
+
+
+    emitter.emit("error", "wtf!");
+
+    t.equal(count, 1, "on_unhandled_event capture errors");
 
     t.end();
 });
