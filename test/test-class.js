@@ -245,15 +245,15 @@ test("typeof", function(t) {
     t.equal($.typeof(/^a$/), "regexp", "object fail");
 
     (function() {
-    t.equal($.typeof(arguments), "arguments", "undefined fail");
+        t.equal($.typeof(arguments), "arguments", "undefined fail");
     }());
 
     (function() {
-    t.equal($.typeof(arguments), "arguments", "undefined fail");
+        t.equal($.typeof(arguments), "arguments", "undefined fail");
     }({x:1}));
 
     (function() {
-    t.equal($.typeof(arguments), "arguments", "undefined fail");
+        t.equal($.typeof(arguments), "arguments", "undefined fail");
     }(1, 1));
 
     t.equal($.typeof(d), "Dog", "class name fail");
@@ -288,7 +288,7 @@ test("instanceof", function(t) {
 
 
 
-test("hide propertoes", function(t) {
+test("hide properties", function(t) {
     var m = new Mole(),
         v = new Vector(),
         key;
@@ -296,6 +296,18 @@ test("hide propertoes", function(t) {
     for(key in v) {
         t.notEqual(key, "__i", "Vector is not hidden");
     }
+
+    t.end();
+});
+
+
+test("disable autoset", function(t) {
+    var m = $.Class("disable_autoset", {
+            prop : false
+        }).disable_autoset(),
+        m2 = new m({prop: true});
+
+    t.equal(m2.prop, false, "disable_autoset obj.prop to default");
 
     t.end();
 });

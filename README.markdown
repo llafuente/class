@@ -5,11 +5,12 @@
 ============
 
 Object Oriented for javascript based on prototypes and new shinny features in ES5.
-Do not provide private/protected properties (do not want to use eval).
-Proxy resilient (mostly...)
-Proper typeof and instanceof.
-Many Object enhacements without messing propotypes
-Function enhacements but this time, in the prototypes for easy to use.
+
+* Do not provide private/protected properties (do not want to use eval).
+* Proxy resilient (mostly...)
+* Proper typeof and instanceof.
+* Many Object enhacements without messing propotypes
+* Function enhacements but this time, in the prototypes for easy to use.
 
 
 ## Objective
@@ -26,367 +27,76 @@ assert_arg(...)
 // </debug>
 ```
 
-## Coding: Class
-========================
-
-$.Class(String name[, Object properties = null[, Object methods = null]]);
-Class.implements(Object {function_name:Function});
-
-``` js
-
-var $ = require('class');
-
-var Dog = $.Class("Dog", { // note: you could use new, but it's not required...
-    animal: true, // public
-    __bite_power: 10 // "private", it wont be setted in the constructor.
-});
-
-// set some functions
-Dog.implements({
-    __construct: function(obj) { // I know PHP-ish
-        console.log("if (obj) is an object! it will automatically be set to DEFINED properties");
-    },
-    bite: function(where) {
-        return "Dog bites!";
-    },
-    speak: function() {
-        return "bark";
-    },
-});
-
-// note: you can call implements as many times as you need.
-Dog.implements({
-    toString: function() {
-        return "I'm a Dog";
-    }
-});
-
-// but use new here, because sound more error resilient
-var d = new Dog({animal: false, __bite_power: 500});
-
-console.log(d.bite()); // console: Dog bites!
-console.log(d.animal); // console: false
-console.log(d.__bite_power); // console: 10
-console.log("" + d); // console: I'm a Dog
-
-```
-
-## Extending Classes
-====================
-
-Class.extends(Class cls[, Boolean override_properties = true[, Boolean extend_static = true]]);
-
-``` js
-// using previous code... continue
-
-var Kitty = $.Class("Kitty", {
-    __bite_power: 5
-});
-
-Kitty.extends(Dog, false); // Do not override properties => __bite_power will be 5
-
-Kitty.implements({
-    bite: function() {
-        return "Kitty bites!";
-    },
-    speak: function() {
-        // use of parent to call a function that "father" has
-        return "I cant " + this.parent() + ", I meow";
-    }
-});
-
-var k = new Kitty();
-
-console.log(k.bite()); // console: Dog bites!
-console.log(d.bite()); // console: Kitty bites!
-console.log(k.speak()); // console: "I cant bark, I meow"
-
-```
-
-## Abstract Class methods
-=========================
-
-Class.abstract(Array method_list)
-
-``` js
-
-var Animal = $.Class("Animal", {
-    animal: true,
-    __bite_power: null
-});
-
-Animal.abstract(["bite"]);
-
-//you could try this... but...
-try {
-    new Animal(); // throws -> because its abstract!
-} catch(e) {
-    console.log(e); // check the error
-}
-
-var Whale = $.Class("Whale", {
-    __bite_power: /*it's over*/ 9000 /*!!!!!!!*/
-});
-
-Whale.extends(Animal, false); // again remember the 2nd arguments...
-
-//you could try this... but...
-try {
-    new Whale(); // throws -> because bite is not implemented
-} catch(e) {
-    console.log(e); // check the error
-}
-
-Whale.implements({
-    bite: function(where) {
-        return "kill me!";
-    }
-});
-
-var w = new Whale(); // ok now :)
-
-console.log(w.bite()); // console: kill me!
-
-```
-
-
-## Method aliasing
-==================
-
-Class.alias(String dst_method_name, String src_method_name);
-
-``` js
-
-Whale.alias("destroy", "bite");
-console.log(w.destroy()); // console: kill me!
-
-```
-
-## Finale methods
-=================
-
-Class.final(Object {function_name:Function});
-
-``` js
-
-// imagine you have this before the extends
-Animal.final({
-    die: function() {
-        return "an animal died";
-    }
-});
-
-// you should extend always when the class is finished
-Whale.extends(Animal, false);
-
-try {
-    Whale.implements({
-        die: function() {
-            return "dont mind the text, it throws!";
-        }
-    });
-} catch(e) {
-    console.log(e);
-}
-
-```
-
-## Hide methods (no enumerable)
-===============================
-
-Class.hide(Array method list);
-
-``` js
-
-var Mole = $.Class("Mole", {
-    __bite_power: -1
-});
-
-Mole.implements({
-    bite: function() {
-        return "you can see a mole when bite you!";
-    }
-});
-
-Mole.hide(["bite"]);
-
-var m = new Mole();
-
-// This way you can hide all methods an have a clean console.log without .serialize()
-// I know you are lazy
-console.log(m); // console: { __bite_power: -1 }
-
-// also hided from the "Class"
-console.log(Mole);
-
-
-// @tip: hide all methods ?
-// Mole.hide( Mole.get_methods() )
-
-```
-
-## instanceof & typeof
-======================
-
-A proper implementation of instanceof and typeof is provided in good harmony with the Class system :)
-
-``` js
-// instanceof on Class
-console.log($.instanceof(Dog, "Dog"));  // console: "true"
-console.log($.instanceof(Kitty, "Kitty"));  // console: "true"
-console.log($.instanceof(Whale, "Whale"));  // console: "true"
-
-// instanceof on Class instances
-console.log($.instanceof(d, "Dog"));    // console: "true"
-console.log($.instanceof(d, "Class"));  // console: "true"
-console.log($.instanceof(k, "Kitty"));  // console: "true"
-console.log($.instanceof(k, "Class"));  // console: "true"
-console.log($.instanceof(w, "Whale"));  // console: "true"
-console.log($.instanceof(w, "Animal")); // console: "true"
-console.log($.instanceof(w, "Class"));  // console: "true"
-
-// typeof on Class instances
-console.log($.typeof(d))          // console: "Dog"
-console.log($.typeof(k))          // console: "Kitty"
-console.log($.typeof(w))          // console: "Whale"
-
-// typeof on js types
-console.log($.typeof("string"))    // console: "string"
-console.log($.typeof([]))          // console: "array"
-console.log($.typeof(new Array(1)) // console: "array"
-console.log($.typeof(1))           // console: "number"
-console.log($.typeof(1.0))         // console: "number"
-console.log($.typeof(NaN))         // console: "null"
-console.log($.typeof(null))        // console: "null"
-console.log($.typeof(undefined))   // console: "null", maybe change...
-console.log($.typeof(true))        // console: "boolean"
-console.log($.typeof(false))       // console: "boolean"
-console.log($.typeof({}))          // console: "object"
-console.log($.typeof(new Date()))  // console: "date"
-
-(function() {
-console.log($.typeof(arguments)) // console: "arguments"
-}());
-
-```
-
-
-
-## HOWTO: serialization & properties init
-=========================================
-
-(Class Object).serialize([Boolean include_private])
-
-``` js
-
-var Vector = $.Class("Vector", {
-    x: 0,
-    y: 0,
-    __private: true
-});
-
-var v = new Vector({x: 10, y:10});
-console.log(v.serialize()); // {x: 10, y:10}
-console.log(v.serialize(true)); // {x: 10, y:10, __private: true}
-
-// unserialize is wip
-
-```
-
-## Sugar list
+There is no production library atm.
+
+## Class
+
+* Class(String name[, Object properties = null[, Object methods = null]])
+* .implements(Object {function_name:Function})
+* .extends(Class cls[, Boolean override_properties = true[, Boolean extend_static = true]])
+* .abstract(Array method_list)
+* .alias(String dst_method_name, String src_method_name)
+* .final(Object {function_name:Function})
+* .properties (Object {property_name: value})
+* .property (String name, Function get, Function set, Boolean enumerable)
+* .hide(Array properties)
+* .disable_autoset() // once
+* .get_methods()
+* .get_abstract_methods()
+* .get_static_methods()
+* .get_final_methods()
+* .get_properties()
+* .get_properties_descriptors()
+* .seal()
+
+## Instances
+
+* serialize([Boolean include_private])
+* unserialize([Boolean include_private])
+
+Examples below!!
+
+## Sugar
 =============
 
-``` js
+Because the library do not want to populate the Javascript default Types by default, everything is returned by the module, but if you call: require("node-class").populateTypes() all this functions will be available in the "correct" place.
 
-Object.each // for in
-Object.merge // merge two objects, modify the first argument!!!
-Object.merge_cloning //merge and clone
-Function.prototype.pass // use the given args for every call
-Function.prototype.args // prepend given arguments
-Function.prototype.delay // delay the execution x ms
-Function.prototype.periodical // execute every x ms
-Function.prototype.debounce // execute once every x ms regardless the call count
-Function.prototype.throttle // limit the execution time, one time every x ms
-Function.prototype.once // execute once
-String.sprintf //same as c
-String.vsprintf //same as c
-Array.ize // create an array given any arg
-Array.append //append ar2 to ar, return a cloned one
-Array.clone //clone an array
-Array.insertAt // insert in given position
-RegExp.escape // escape the string so it can be used inside a regex as literal
-
-```
-## Sugar examples: Functions
-============================
+Function type is modified by: [function-enhacements](http://travis-ci.org/llafuente/function-enhacements)
 
 ``` js
 
-var test = function() {
-    console.log(arguments);
-    console.log(this);
-}
-
-// Function.args: prepend given arguments
-
-var t2 = test.args(["say", "hello"], {iamthis: true});
-
-t2();
-// { '0': 'say', '1': 'hello' }
-// { iamthis: true }
-
-t2("thidparam!");
-// { '0': 'say', '1': 'hello', '2': 'thidparam!' }
-// { iamthis: true }
-
-
-// Function.pass: create a function with given args and any call you will have the same arguments
-
-var t3 = test.pass(["dont mind your args"], {whoami: "root"});
-
-t3();
-// { '0': 'dont mind your args' }
-// { whoami: 'root' }
-t3("second - is not displayed!");
-// { '0': 'dont mind your args' }
-// { whoami: 'root' }
-
-
-// Function.delay execute the funtion in X miliseconds
-
-var del = t2.delay(500);
-setTimeout(del);
-
-// Function.periodical execute the funtion every X miliseconds
-
-var inter = t2.periodical(500);
-clearInterval(inter);
-
-// Function.throttle execute a function once every X miliseconds, dont mind how many time you call it.
-
-var t4 = test.throttle(1000);
-var inter = t4.periodical(50);
+RegExp.escape       - RegExpEscape; // escape the string so it can be used inside a regex as literal
+Object.merge        - ObjectMerge; // merge two objects, modify the first argument!!!
+Object.mergecloning - ObjectMergeCloning; //merge and clone
+Object.each         - ObjectEach; // for in
+Array.ize           - ArrayIze; // create an array given any arg
+Array.clone         - ArrayClone; //clone an array
+Array.append        - ArrayAppend; //append ar2 to ar, return a cloned one
+Array.insertAt      - ArrayInsertAt; // insert in given position
 
 
 ```
 
-## Classes: Events
+## Events Class
 ==================
 
-``` js
-var ev_manager = new $.Events(),
-    fn = function() { console.log("fired"); };
-ev_manager.on("ev", fn);
-ev_manager.emit("ev"); // console.log: fired
-// wildcard support!
-ev_manager.emit("e*"); // console.log: fired
-// remove
-ev_manager.off("ev", fn);
-console.log(ev_manager.has_listener("ev", fn)); // console.log: false
+* Events()
+* .on_unhandled_event(Function)
+* .on(String event, Function fn, Boolean internal= false, Number times = 0)
+* .once(String event, Function fn)
+* .has_listener(String event) {
+* .listeners(String event) {
+* .emit(String event, Function args, Number delay_ms) support wildcards "*"
+* .off(String event, Function fn)
+* .remove_listeners(String event)
+* .pipe_events(Class cls)
 
-```
+Notes
+* Events throws if you dont call this.parent() in __construct
+* emit("error", ...) will throw if no "error" event listener or "unhandled event" listener
 
-## Classes: Animate & EventMachine
+
+## Animate & EventMachine Classes
 ==================================
 
 See the webexamples :)
@@ -419,3 +129,272 @@ node test.js
 ==========
 
 MIT.
+
+
+## Example: Basic
+============
+
+``` js
+
+var Class = require('node-class').Class;
+
+var Dog = Class("Dog", { // new is not required here.
+    // public property
+    animal: true,
+    // "private" property, repeat: "private"
+    // it wont be setted in the constructor because is prepend with two underscores
+    __bite_power: 10
+});
+
+// implements some functions
+Dog.implements({
+    __construct: function(obj) { // I know PHP-ish
+        //if (typeof obj == "object") ->
+            // it will automatically merge obj into this but only the defined public properties
+    },
+    bite: function(where) {
+        return "Dog bites!";
+    },
+    speak: function() {
+        return "bark";
+    },
+});
+
+// Note: you can call implements as many times as you need
+// and goes to the prototype so every instance is updated. BUT! properties() doesn't.
+Dog.implements({
+    toString: function() {
+        return "I'm a Dog";
+    }
+});
+
+// Use new here, because sound more error resilient, it throws otherwise
+var d = new Dog({animal: false, __bite_power: 500});
+
+console.log(d.bite()); // console: Dog bites!
+console.log(d.animal); // console: false
+console.log(d.__bite_power); // console: 10
+console.log("" + d); // console: I'm a Dog
+
+```
+
+## Example: Extends
+====================
+
+``` js
+// using previous code... continue
+
+var Kitty = Class("Kitty", {
+    __bite_power: 5
+});
+
+Kitty.extends(Dog, false); // Do not override properties => __bite_power will be 5
+
+Kitty.implements({
+    bite: function() {
+        return "Kitty bites!";
+    },
+    speak: function() {
+        // use of parent to call a function that "father" has
+        return "I cant " + this.parent() + ", I meow";
+    }
+});
+
+var k = new Kitty();
+
+console.log(k.bite()); // console: Dog bites!
+console.log(d.bite()); // console: Kitty bites!
+console.log(k.speak()); // console: "I cant bark, I meow"
+
+```
+
+## Example: Abstract
+=========================
+
+``` js
+
+var Animal = Class("Animal", {
+    animal: true,
+    __bite_power: null
+});
+
+Animal.abstract(["bite"]);
+
+//you could try this... but...
+try {
+    new Animal(); // throws -> because its abstract!
+} catch(e) {
+    console.log(e); // check the error
+}
+
+var Whale = Class("Whale", {
+    __bite_power: /*it's over*/ 9000 /*!!!!!!!*/
+});
+
+Whale.extends(Animal, false); // again remember the 2nd arguments...
+
+//you could try this... but...
+try {
+    new Whale(); // throws -> because bite is not implemented
+} catch(e) {
+    console.log(e); // check the error
+}
+
+Whale.implements({
+    bite: function(where) {
+        return "kill me!";
+    }
+});
+
+var w = new Whale(); // ok now :)
+
+console.log(w.bite()); // console: kill me!
+
+```
+
+
+## Example: Alias
+==================
+
+``` js
+
+Whale.alias("destroy", "bite");
+console.log(w.destroy()); // console: kill me!
+
+```
+
+## Example: Final
+=================
+
+* Class.final(Object {function_name:Function});
+
+``` js
+
+// imagine you have this before the extends
+Animal.final({
+    die: function() {
+        return "an animal died";
+    }
+});
+
+// you should extend always when the class is finished
+Whale.extends(Animal, false);
+
+try {
+    Whale.implements({
+        die: function() {
+            return "dont mind the text, it throws!";
+        }
+    });
+} catch(e) {
+    console.log(e);
+}
+
+```
+
+## Example: Hide (no enumerable)
+===============================
+
+``` js
+
+var Mole = Class("Mole", {
+    __bite_power: -1
+});
+
+Mole.implements({
+    bite: function() {
+        return "you can see a mole when bite you!";
+    }
+});
+
+Mole.hide(["bite"]);
+
+var m = new Mole();
+
+// This way you can hide all methods an have a clean console.log without .serialize()
+// I know you are lazy
+console.log(m); // console: { __bite_power: -1 }
+
+// also hided from the "Class"
+console.log(Mole);
+
+
+// @tip: hide all methods ?
+// Mole.hide( Mole.get_methods() )
+
+```
+
+## Example: Serialization
+=========================================
+
+``` js
+
+var Vector = Class("Vector", {
+    x: 0,
+    y: 0,
+    __private: true
+});
+
+var v = new Vector({x: 10, y:10});
+console.log(v.serialize()); // {x: 10, y:10}
+console.log(v.serialize(true)); // {x: 10, y:10, __private: true}
+
+// unserialize do the oposite, also has the first parameter to import "private" properties
+
+```
+
+## instanceof & typeof
+======================
+
+A proper implementation of instanceof and typeof is provided in good harmony with the Class system :)
+
+``` js
+// instanceof on Class
+var $ = require('node-class');
+
+console.log($.instanceof(Dog, "Dog"));  // console: "true"
+console.log($.instanceof(Kitty, "Kitty"));  // console: "true"
+console.log($.instanceof(Whale, "Whale"));  // console: "true"
+
+// instanceof on Class instances
+console.log($.instanceof(d, "Dog"));    // console: "true"
+console.log($.instanceof(d, "Class"));  // console: "true"
+console.log($.instanceof(k, "Kitty"));  // console: "true"
+console.log($.instanceof(k, "Class"));  // console: "true"
+console.log($.instanceof(w, "Whale"));  // console: "true"
+console.log($.instanceof(w, "Animal")); // console: "true"
+console.log($.instanceof(w, "Class"));  // console: "true"
+
+// typeof on Class instances
+console.log($.typeof(d))          // console: "Dog"
+console.log($.typeof(k))          // console: "Kitty"
+console.log($.typeof(w))          // console: "Whale"
+
+// typeof on js types
+console.log($.typeof("string"))    // console: "string"
+
+console.log($.typeof([]))          // console: "array"
+console.log($.typeof(new Array(1)) // console: "array"
+
+console.log($.typeof(1))           // console: "number"
+console.log($.typeof(1.0))         // console: "number"
+console.log($.typeof(Infinity))    // console: "number"
+
+console.log($.typeof(NaN))         // console: "null"
+console.log($.typeof(null))        // console: "null"
+console.log($.typeof(undefined))   // console: "null", maybe change...
+
+console.log($.typeof(true))        // console: "boolean"
+console.log($.typeof(false))       // console: "boolean"
+
+console.log($.typeof({}))          // console: "object"
+
+console.log($.typeof(/^a$/))       // console: "regexp"
+
+console.log($.typeof(new Date()))  // console: "date"
+
+(function() {
+    console.log($.typeof(arguments)) // console: "arguments"
+}());
+
+```

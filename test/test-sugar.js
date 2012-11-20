@@ -1,6 +1,7 @@
 var $ = require("../index.js"),
     tap = require("tap"),
-    test = tap.test;
+    test = tap.test,
+    ArrayIze = require("../lib/sugar.js").ArrayIze;
 
 //setup
 
@@ -12,22 +13,22 @@ var counter = 0,
         ++counter;
 
         return {
-            "arguments": Array.ize(arguments)
+            "arguments": ArrayIze(arguments)
         };
         console.log(this);
     };
 
 
-test("Array.ize", function(t) {
-    t.deepEqual(Array.ize(arguments), [ t ], "from args error");
+test("ArrayIze", function(t) {
+    t.deepEqual(ArrayIze(arguments), [ t ], "from args error");
     var obj = {x:1};
-    t.deepEqual(Array.ize(obj), [ obj ], "ize object error");
+    t.deepEqual(ArrayIze(obj), [ obj ], "ize object error");
     var num = 1000;
-    t.deepEqual(Array.ize(num), [ num ], "ize number error");
+    t.deepEqual(ArrayIze(num), [ num ], "ize number error");
     var cls = new $.Class("test", {});
-    t.deepEqual(Array.ize(cls), [ cls ], "ize Class error");
+    t.deepEqual(ArrayIze(cls), [ cls ], "ize Class error");
     var instance = new cls;
-    t.deepEqual(Array.ize(instance), [ instance ], "ize Class instance error");
+    t.deepEqual(ArrayIze(instance), [ instance ], "ize Class instance error");
     t.end();
 });
 
