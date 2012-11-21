@@ -3,12 +3,13 @@
 
     require("function-enhancements");
     // vanilla
-    var sugar = require("./lib/sugar.js"),
+    var sugar,
         i,
         once = false;
 
     module.exports = require("./lib/class.js");
 
+    sugar = require("./lib/sugar.js");
     for(i in sugar) {
         module.exports[i] = sugar[i];
     }
