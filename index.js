@@ -3,7 +3,7 @@
 
     require("function-enhancements");
     // vanilla
-    var sugar = require("./lib/class.js"),
+    var sugar = require("./lib/sugar.js"),
         i,
         once = false;
 
