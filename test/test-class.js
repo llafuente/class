@@ -54,7 +54,9 @@ var Animal = $.Class("Animal", {
     __bite_power: null
 });
 
-Animal.abstract(["bite"]);
+Animal.abstract({
+    "bite": function() {}
+});
 
 
 //extend abstract class

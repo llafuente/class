@@ -34,7 +34,7 @@ There is no production library atm.
 * Class(String name[, Object properties = null[, Object methods = null]])
 * .implements(Object {function_name:Function})
 * .extends(Class cls[, Boolean override_properties = true[, Boolean extend_static = true]])
-* .abstract(Array method_list)
+* .abstract(Object method_list {function_name: array_with_parameter or Function})
 * .alias(String dst_method_name, String src_method_name)
 * .final(Object {function_name:Function})
 * .properties (Object {property_name: value})
@@ -218,7 +218,9 @@ var Animal = Class("Animal", {
     __bite_power: null
 });
 
-Animal.abstract(["bite"]);
+Animal.abstract({
+    "bite": function() {}
+});
 
 //you could try this... but...
 try {
