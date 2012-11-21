@@ -35,7 +35,8 @@ There is no production library atm.
 * .implements(Object {function_name:Function})
 * .extends(Class cls[, Boolean override_properties = true[, Boolean extend_static = true]])
 * .abstract(Object method_list {function_name: array_with_parameter or Function})
-* .alias(String dst_method_name, String src_method_name)
+* .alias(String src_method_name, String dst_method_name)
+* .rename(String src_method_name, String dst_method_name) // We all know you will need this
 * .final(Object {function_name:Function})
 * .properties (Object {property_name: value})
 * .property (String name, Function get, Function set, Boolean enumerable)

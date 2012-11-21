@@ -163,7 +163,7 @@ test("abstract instance", function(t) {
 
 
 test("aliasing methods", function(t) {
-    Whale.alias("destroy", "bite");
+    Whale.alias("bite", "destroy");
 
     var w = new Whale(); // ok now :)
 
@@ -175,8 +175,8 @@ test("aliasing methods", function(t) {
 test("aliasing not found method", function(t) {
 
     try {
-        Whale.alias("destroy", "not_found");
-        throw "how can you alias a not found method!!! ??";
+        Whale.alias("not_found", "not_found");
+        throw new Error("dont fail ?");
     } catch(e) {
         t.notEqual(e.message.indexOf("not found"), -1, "assertion " + e.message);
     }
