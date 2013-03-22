@@ -26,7 +26,7 @@
         Object.each = sugar.ObjectEach;
         Array.ize = sugar.ArrayIze;
         Array.clone = sugar.ArrayClone;
-        Array.append = sugar.ArrayAppend;
+        Array.Append = sugar.ArrayAppend;
         Array.insertAt = sugar.ArrayInsertAt;
     };
 
