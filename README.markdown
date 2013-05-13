@@ -189,6 +189,8 @@ var Kitty = Class("Kitty", {
     __bite_power: 5
 });
 
+// note: allways extends before implements
+
 Kitty.extends(Dog, false); // Do not override properties => __bite_power will be 5
 
 Kitty.implements({
