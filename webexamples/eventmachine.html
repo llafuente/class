@@ -2,13 +2,23 @@
   <html lang="en" dir="ltr" >
 <head>
   <title>Animation test</title>
-  <script src="../lib/sugar.js"></script>
-  <script src="../lib/class.js"></script>
-  <script src="../lib/eventize.js"></script>
-  <script src="../lib/events.js"></script>
-  <script src="../lib/sequence.js"></script>
-  <script src="../lib/animate.js"></script>
-  <script src="../lib/eventmachine.js"></script>
+
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript" src="../lib/sugar.js"></script>
+<script type="text/javascript" src="../node_modules/function-enhancements/lib/function-enhancements.js"></script>
+<script type="text/javascript" src="../lib/sugar.js"></script>
+<script type="text/javascript" src="../lib/class.js"></script>
+<script type="text/javascript" src="../lib/eventize.js"></script>
+<script type="text/javascript" src="../lib/events.js"></script>
+<script type="text/javascript" src="../lib/eventmachine.js"></script>
+<script type="text/javascript" src="../lib/sequence.js"></script>
+<script type="text/javascript" src="../lib/iterable.js"></script>
+<script type="text/javascript" src="../lib/animate.js"></script>
+
+<script type="text/javascript">
+    var $ = NodeClass;
+</script>
+
   <style>
     .square-start {
         border: 1px solid red;
@@ -33,6 +43,8 @@
 </head>
 <body>
 
+    <p>You must click fast each combo...</p>
+
    <input type="text" value="" id="keyboard" />
    <span id="last-key"></span>
    <div id="combos"></div>
@@ -49,7 +61,8 @@
             ["down", "down"],
             ["up", "up"],
             ["up_and_down", "up + down"],
-            ["half_moon", "left, down, right"]
+            ["half_moon", "left, down, right"],
+            ["asd", "a, s, d"]
         ],
         evm = new $.EventMachine();
 

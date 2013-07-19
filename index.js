@@ -1,6 +1,11 @@
 (function (exports, browser) {
     "use strict";
 
+    if (browser) {
+        // for browser variable is in NodeClass
+        return;
+    }
+
     require("function-enhancements");
     // vanilla
     var sugar,
@@ -10,13 +15,13 @@
     module.exports = require("./lib/class.js");
 
     sugar = require("./lib/sugar.js");
-    for(i in sugar) {
+    for (i in sugar) {
         module.exports[i] = sugar[i];
     }
 
-    module.exports.populateTypes = function() {
-        if(once === true) {
-            return ;
+    module.exports.populateTypes = function () {
+        if (once === true) {
+            return;
         }
         once = true;
 
@@ -38,4 +43,7 @@
     module.exports.Iterable = require("./lib/iterable.js").Iterable;
     module.exports.Animate = require("./lib/animate.js").Animate;
 
-}(typeof module == "undefined" ? $ : module.exports, typeof module == "undefined"));
+}(typeof module == "undefined" ? null : module.exports, typeof module == "undefined"));
+
+// this is for browser initialization!
+var NodeClass = {};

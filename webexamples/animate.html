@@ -1,36 +1,49 @@
 <!DOCTYPE html>
-  <html lang="en" dir="ltr" >
+<html lang="en" dir="ltr">
 <head>
   <title>Animation test</title>
-  <script src="../lib/sugar.js"></script>
-  <script src="../lib/class.js"></script>
-  <script src="../lib/eventize.js"></script>
-  <script src="../lib/events.js"></script>
-  <script src="../lib/sequence.js"></script>
-  <script src="../lib/animate.js"></script>
-  <style>
-    .square-start {
-        border: 1px solid red;
-        position: absolute;
-        left: 50px;
-        width: 50px;
-        height: 50px;
-    }
-    .square-end {
-        border: 1px solid blue;
-        position: absolute;
-        left: 500px;
-        width: 50px;
-        height: 50px;
-    }
 
-    .readme {
-        position: absolute;
-        left: 250px;
-    }
-  </style>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript" src="../lib/sugar.js"></script>
+<script type="text/javascript" src="../node_modules/function-enhancements/lib/function-enhancements.js"></script>
+<script type="text/javascript" src="../lib/sugar.js"></script>
+<script type="text/javascript" src="../lib/class.js"></script>
+<script type="text/javascript" src="../lib/eventize.js"></script>
+<script type="text/javascript" src="../lib/events.js"></script>
+<script type="text/javascript" src="../lib/eventmachine.js"></script>
+<script type="text/javascript" src="../lib/sequence.js"></script>
+<script type="text/javascript" src="../lib/iterable.js"></script>
+<script type="text/javascript" src="../lib/animate.js"></script>
+
+<script type="text/javascript">
+    var $ = NodeClass;
+</script>
+
+<style>
+.square-start {
+    border: 1px solid red;
+    position: absolute;
+    left: 50px;
+    width: 50px;
+    height: 50px;
+}
+.square-end {
+    border: 1px solid blue;
+    position: absolute;
+    left: 500px;
+    width: 50px;
+    height: 50px;
+}
+
+.readme {
+    position: absolute;
+    left: 250px;
+}
+</style>
+
 </head>
 <body>
+<h1 id="move-all">Move all!</h1>
 
 
 </body>
@@ -54,53 +67,57 @@
         type: "number"
     });
 
-
-    Object.defineProperty(PositionWrapper.prototype, "top", {
-        get: function() {
-            return this._top;
-        },
-        set : function(newValue) {
-            try {
-                this.element.style.top = (newValue)+"px";
-            } catch(e) {
-            }
-            this._top = newValue;
-            return newValue;
+    PositionWrapper.property("top",
+    function() {
+        return this._top;
+    },
+    function(newValue) {
+        try {
+            this.element.style.top = (newValue)+"px";
+        } catch(e) {
         }
+        this._top = newValue;
+        return newValue;
     });
 
-    Object.defineProperty(PositionWrapper.prototype, "left", {
-        get: function() {
-            return this._left;
-        },
-        set : function(newValue) {
-            try {
-                this.element.style.left = (newValue)+"px";
-            } catch(e) {
-            }
-            this._left = newValue;
-            return newValue;
+    PositionWrapper.property("left",
+    function() {
+        return this._left;
+    },
+    function(newValue) {
+        try {
+            this.element.style.left = (newValue)+"px";
+        } catch(e) {
         }
+        this._left = newValue;
+        return newValue;
     });
 
     var k = Object.keys($.Animate.Transitions);
 
+    console.log(k);
+
     k.forEach(function(key, i) {
-        var d = document.createElement("div");
+        var d,
+            dw,
+            d2,
+            d3;
+        d = document.createElement("div");
         d.id = "start-" + key;
         d.className = "square-start";
 
-        var dw = new PositionWrapper({
+        dw = new PositionWrapper({
             element: d,
-            top: (i * 60)
+            top: 150 + (i * 60)
         });
+        d.style.top = (150 + (i * 60)) + "px";
 
         document.body.appendChild(d);
 
-        var d2 = document.createElement("div");
+        d2 = document.createElement("div");
         d2.id = "end-" + key;
         d2.className = "square-end";
-        d2.style.top = (i * 60)+"px";
+        d2.style.top = (150 + (i * 60)) + "px";
         document.body.appendChild(d2);
 
         d.onclick = function() {
@@ -112,14 +129,29 @@
             }, [50, 500]);
         }
 
-        var d3 = document.createElement("div");
+        dw.on("animation:end", function(){
+            d3.style.color = "#F00";
+        });
+
+        d3 = document.createElement("div");
         d3.innerHTML = key;
         d3.id = "readme-" + key;
         d3.className = "readme";
-        d3.style.top = (i * 60) + 15 +"px";
+        d3.style.top = ((i * 60) + 150 + 15) + "px";
         document.body.appendChild(d3);
 
     });
+
+    document.getElementById("move-all").onclick = function() {
+        var divs = document.body.getElementsByTagName("div"),
+            i;
+        for (i = 0; i < divs.length; ++i) {
+            if(divs[i].id.indexOf("start-") !== -1) {
+                divs[i].onclick();
+            }
+        }
+
+    }
 
 
   </script>
