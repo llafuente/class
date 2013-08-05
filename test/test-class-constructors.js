@@ -8,7 +8,7 @@ $.log_level = 0;
 var CLS1 = $.Class("CLS1", {
     counter: 0
 });
-CLS1.implements({
+CLS1.Implements({
     __construct: function() {
         ++this.counter;
     }
@@ -17,9 +17,9 @@ CLS1.implements({
 
 var CLS2 = $.Class("CLS2", {});
 
-CLS2.extends(CLS1);
+CLS2.Extends(CLS1);
 
-CLS2.implements({
+CLS2.Implements({
     __construct: function() {
         this.parent();
         ++this.counter;
@@ -28,9 +28,9 @@ CLS2.implements({
 
 var CLS3 = $.Class("CLS3", {});
 
-CLS3.extends(CLS2);
+CLS3.Extends(CLS2);
 
-CLS3.implements({
+CLS3.Implements({
     __construct: function() {
         this.parent();
         ++this.counter;

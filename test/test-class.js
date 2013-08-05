@@ -20,7 +20,7 @@ var Dog = $.Class("Dog", {
     __bite_power: 10
 });
 
-Dog.implements({
+Dog.Implements({
     bite: function(where) {
         return "Dog bites!";
     },
@@ -36,9 +36,9 @@ var Kitty = $.Class("Kitty", {
     __bite_power: 5
 });
 
-Kitty.extends(Dog, false); //false means do not override properties!
+Kitty.Extends(Dog, false); //false means do not override properties!
 
-Kitty.implements({
+Kitty.Implements({
     bite: function() {
         return "Kitty bites!";
     },
@@ -54,7 +54,7 @@ var Animal = $.Class("Animal", {
     __bite_power: null
 });
 
-Animal.abstract({
+Animal.Abstract({
     "bite": function() {}
 });
 
@@ -64,16 +64,16 @@ var Whale = $.Class("Whale", {
     __bite_power: /*it's over*/ 9000 /*!!!!!!!*/
 });
 
-Whale.extends(Animal, false);
+Whale.Extends(Animal, false);
 
 
 var Mole = $.Class("Mole", {
     __bite_power: -1
 });
 
-Mole.extends(Animal, false);
+Mole.Extends(Animal, false);
 
-Mole.implements({
+Mole.Implements({
     bite: function() {
         return "you can see a mole when bite you!";
     }
@@ -138,7 +138,7 @@ test("abstract test init extend", function(t) {
     }
 
     //implement bite!
-    Whale.implements({
+    Whale.Implements({
         bite: function(where) {
             return "kill me!";
         }
@@ -230,37 +230,37 @@ test("typeof", function(t) {
     var w = new Whale(); // ok now :)
 
     // typeof test
-    t.equal($.typeof(new Date()), "date", "type of string fail");
+    t.equal($.Typeof(new Date()), "date", "type of string fail");
 
-    t.equal($.typeof("string"), "string", "type of string fail");
-    t.equal($.typeof([]), "array", "type of array fail");
-    t.equal($.typeof(new Array(1)), "array", "type of array fail");
-    t.equal($.typeof(1), "number", "number 1 fail");
-    t.equal($.typeof(1.0), "number", "number 1.0 fail");
-    t.equal($.typeof(NaN), "null", "Nan fail");
-    t.equal($.typeof(false), "boolean", "boolean fail");
-    t.equal($.typeof(true), "boolean", "boolean fail");
-    t.equal($.typeof(undefined), "null", "undefined fail");
-    t.equal($.typeof(null), "null", "null fail");
-    t.equal($.typeof({}), "object", "object fail");
-    t.equal($.typeof(Infinity), "number", "object fail");
-    t.equal($.typeof(/^a$/), "regexp", "object fail");
+    t.equal($.Typeof("string"), "string", "type of string fail");
+    t.equal($.Typeof([]), "array", "type of array fail");
+    t.equal($.Typeof(new Array(1)), "array", "type of array fail");
+    t.equal($.Typeof(1), "number", "number 1 fail");
+    t.equal($.Typeof(1.0), "number", "number 1.0 fail");
+    t.equal($.Typeof(NaN), "null", "Nan fail");
+    t.equal($.Typeof(false), "boolean", "boolean fail");
+    t.equal($.Typeof(true), "boolean", "boolean fail");
+    t.equal($.Typeof(undefined), "null", "undefined fail");
+    t.equal($.Typeof(null), "null", "null fail");
+    t.equal($.Typeof({}), "object", "object fail");
+    t.equal($.Typeof(Infinity), "number", "object fail");
+    t.equal($.Typeof(/^a$/), "regexp", "object fail");
 
     (function() {
-        t.equal($.typeof(arguments), "arguments", "undefined fail");
+        t.equal($.Typeof(arguments), "arguments", "undefined fail");
     }());
 
     (function() {
-        t.equal($.typeof(arguments), "arguments", "undefined fail");
+        t.equal($.Typeof(arguments), "arguments", "undefined fail");
     }({x:1}));
 
     (function() {
-        t.equal($.typeof(arguments), "arguments", "undefined fail");
+        t.equal($.Typeof(arguments), "arguments", "undefined fail");
     }(1, 1));
 
-    t.equal($.typeof(d), "Dog", "class name fail");
-    t.equal($.typeof(k), "Kitty", "class name fail");
-    t.equal($.typeof(w), "Whale", "class name fail");
+    t.equal($.Typeof(d), "Dog", "class name fail");
+    t.equal($.Typeof(k), "Kitty", "class name fail");
+    t.equal($.Typeof(w), "Whale", "class name fail");
 
     t.end();
 });
@@ -271,19 +271,19 @@ test("instanceof", function(t) {
     var k = new Kitty();
     var w = new Whale(); // ok now :)
 
-    t.equal($.instanceof(d, "Dog"), true, "class name fail");
-    t.equal($.instanceof(d, "Class"), true, "class name fail");
+    t.equal($.Instanceof(d, "Dog"), true, "class name fail");
+    t.equal($.Instanceof(d, "Class"), true, "class name fail");
 
-    t.equal($.instanceof(k, "Kitty"), true, "class name fail");
-    t.equal($.instanceof(k, "Class"), true, "class name fail");
+    t.equal($.Instanceof(k, "Kitty"), true, "class name fail");
+    t.equal($.Instanceof(k, "Class"), true, "class name fail");
 
-    t.equal($.instanceof(w, "Animal"), true, "class name fail");
-    t.equal($.instanceof(w, "Class"), true, "class name fail");
-    t.equal($.instanceof(w, "Whale"), true, "class name fail");
+    t.equal($.Instanceof(w, "Animal"), true, "class name fail");
+    t.equal($.Instanceof(w, "Class"), true, "class name fail");
+    t.equal($.Instanceof(w, "Whale"), true, "class name fail");
 
-    t.equal($.instanceof(Dog, "Dog"), true, "class name fail");
-    t.equal($.instanceof(Kitty, "Kitty"), true, "class name fail");
-    t.equal($.instanceof(Whale, "Whale"), true, "class name fail");
+    t.equal($.Instanceof(Dog, "Dog"), true, "class name fail");
+    t.equal($.Instanceof(Kitty, "Kitty"), true, "class name fail");
+    t.equal($.Instanceof(Whale, "Whale"), true, "class name fail");
 
     t.end();
 });

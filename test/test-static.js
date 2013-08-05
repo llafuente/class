@@ -12,7 +12,7 @@ var Vector = $.Class("Vector", {
     y:0
 });
 
-Vector.static({
+Vector.Static({
     plus: function(a, b) {
         return new Vector({x: a.x + b.x, y: a.y + b.y});
     }

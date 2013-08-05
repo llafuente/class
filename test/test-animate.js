@@ -14,7 +14,7 @@ var Vector = $.Class("Vector", {
     }),
     cfg;
 
-Vector.extends($.Animate, true, true);
+Vector.Extends($.Animate, true, true);
 
 cfg = Vector.setAnimationProterties("x", {
     mask: "@d",
