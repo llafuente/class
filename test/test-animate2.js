@@ -65,14 +65,14 @@ test("x animation chain", function(t) {
     v.animate({
         property: "x",
         transition: Animate.Transitions.linear,
-        time: 5000,
+        time: 2000,
         fps: 1,
     }, [0, 100]);
 
     v.animate({
         property: "x",
         transition: Animate.Transitions.linear,
-        time: 5000,
+        time: 2000,
         fps: 1,
     }, [500, 600]);
 });
@@ -117,21 +117,21 @@ test("x animation chain", function(t) {
     v.animate({
         property: "x",
         transition: Animate.Transitions.linear,
-        time: 5000,
+        time: 2000,
         fps: 1,
     }, [0, 100]);
 
     v.animate({
         property: "x",
         transition: Animate.Transitions.linear,
-        time: 5000,
+        time: 2000,
         fps: 1,
     }, [500, 600]);
 
     v.animate({
         property: "x",
         transition: Animate.Transitions.linear,
-        time: 5000,
+        time: 2000,
         fps: 1,
     }, [700, 800]);
 });
@@ -147,14 +147,14 @@ test("x animation stop", function(t) {
     v.animate({
         property: "x",
         transition: Animate.Transitions.linear,
-        time: 5000,
+        time: 2000,
         fps: 1,
     }, [0, 100]);
 
     v.animate({
         property: "x",
         transition: Animate.Transitions.linear,
-        time: 5000,
+        time: 2000,
         fps: 1,
     }, [500, 600]);
 
@@ -192,14 +192,14 @@ test("x animation chain", function(t) {
     v.animate({
         property: "x",
         transition: Animate.Transitions.linear,
-        time: 5000,
+        time: 2000,
         fps: 1,
     }, [0, 100]);
 
     v.animate({
         property: "x",
         transition: Animate.Transitions.linear,
-        time: 5000,
+        time: 2000,
         fps: 1,
     }, [500, 600]);
 });
