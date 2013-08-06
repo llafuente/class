@@ -35,10 +35,10 @@
     "node": ">=0.4"
   },
   "dependencies" : {
-    "function-enhancements" : "*"
+    "function-enhancements" : "*",
+    "array-enhancements" : "*"
   },
   "devDependencies": {
-    "tap" : "~0.2.5",
-    "benchmark" : "~0.3.0"
+    "tap" : "~0.2.5"
   }
 }

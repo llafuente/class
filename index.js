@@ -29,10 +29,6 @@
         Object.mergecloning = sugar.ObjectMergeCloning;
         Object.merge = sugar.ObjectMerge;
         Object.each = sugar.ObjectEach;
-        Array.ize = sugar.ArrayIze;
-        Array.clone = sugar.ArrayClone;
-        Array.Append = sugar.ArrayAppend;
-        Array.insertAt = sugar.ArrayInsertAt;
     };
 
     // sugar
