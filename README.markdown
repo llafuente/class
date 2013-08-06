@@ -8,7 +8,7 @@ Object Oriented for javascript based on prototypes and new shinny features in ES
 
 * Do not provide private/protected properties (do not want to use eval).
 * Proxy resilient (mostly...)
-* Proper typeof and instanceof.
+* Proper Typeof and Instanceof.
 * Many Object enhacements without messing propotypes
 * Function enhacements but this time, in the prototypes for easy to use.
 
@@ -27,6 +27,7 @@ assert_arg(...)
 // </debug>
 ```
 
+And will help you with the common errors (those I got everyday!).
 There is no production library atm.
 
 ## Class
@@ -37,7 +38,7 @@ There is no production library atm.
 * .Abstract(Object method_list {function_name: array_with_parameter or Function})
 * .Final(Object {function_name:Function})
 * .alias(String src_method_name, String dst_method_name)
-* .rename(String src_method_name, String dst_method_name) // We all know you will need this
+* .rename(String src_method_name, String dst_method_name) // you will need this :)
 * .properties (Object {property_name: value})
 * .property (String name, Function get, Function set, Boolean enumerable)
 * .hide(Array properties)
@@ -151,7 +152,7 @@ var Dog = Class("Dog", { // new is not required here.
 // implements some functions
 Dog.implements({
     __construct: function(obj) { // I know PHP-ish
-        //if (typeof obj == "object") ->
+        //if (Typeof obj == "object") ->
             // it will automatically merge obj into this but only the defined public properties
     },
     bite: function(where) {
@@ -349,58 +350,58 @@ console.log(v.serialize(true)); // {x: 10, y:10, __private: true}
 
 ```
 
-## instanceof & typeof
+## Instanceof & Typeof
 ======================
 
-A proper implementation of instanceof and typeof is provided in good harmony with the Class system :)
+A proper implementation of Instanceof and Typeof is provided in good harmony with the Class system :)
 
 ``` js
-// instanceof on Class
+// Instanceof on Class
 var $ = require('node-class');
 
-console.log($.instanceof(Dog, "Dog"));  // console: "true"
-console.log($.instanceof(Kitty, "Kitty"));  // console: "true"
-console.log($.instanceof(Whale, "Whale"));  // console: "true"
+console.log($.Instanceof(Dog, "Dog"));  // console: "true"
+console.log($.Instanceof(Kitty, "Kitty"));  // console: "true"
+console.log($.Instanceof(Whale, "Whale"));  // console: "true"
 
-// instanceof on Class instances
-console.log($.instanceof(d, "Dog"));    // console: "true"
-console.log($.instanceof(d, "Class"));  // console: "true"
-console.log($.instanceof(k, "Kitty"));  // console: "true"
-console.log($.instanceof(k, "Class"));  // console: "true"
-console.log($.instanceof(w, "Whale"));  // console: "true"
-console.log($.instanceof(w, "Animal")); // console: "true"
-console.log($.instanceof(w, "Class"));  // console: "true"
+// Instanceof on Class instances
+console.log($.Instanceof(d, "Dog"));    // console: "true"
+console.log($.Instanceof(d, "Class"));  // console: "true"
+console.log($.Instanceof(k, "Kitty"));  // console: "true"
+console.log($.Instanceof(k, "Class"));  // console: "true"
+console.log($.Instanceof(w, "Whale"));  // console: "true"
+console.log($.Instanceof(w, "Animal")); // console: "true"
+console.log($.Instanceof(w, "Class"));  // console: "true"
 
-// typeof on Class instances
-console.log($.typeof(d))          // console: "Dog"
-console.log($.typeof(k))          // console: "Kitty"
-console.log($.typeof(w))          // console: "Whale"
+// Typeof on Class instances
+console.log($.Typeof(d))          // console: "Dog"
+console.log($.Typeof(k))          // console: "Kitty"
+console.log($.Typeof(w))          // console: "Whale"
 
-// typeof on js types
-console.log($.typeof("string"))    // console: "string"
+// Typeof on js types
+console.log($.Typeof("string"))    // console: "string"
 
-console.log($.typeof([]))          // console: "array"
-console.log($.typeof(new Array(1)) // console: "array"
+console.log($.Typeof([]))          // console: "array"
+console.log($.Typeof(new Array(1)) // console: "array"
 
-console.log($.typeof(1))           // console: "number"
-console.log($.typeof(1.0))         // console: "number"
-console.log($.typeof(Infinity))    // console: "number"
+console.log($.Typeof(1))           // console: "number"
+console.log($.Typeof(1.0))         // console: "number"
+console.log($.Typeof(Infinity))    // console: "number"
 
-console.log($.typeof(NaN))         // console: "null"
-console.log($.typeof(null))        // console: "null"
-console.log($.typeof(undefined))   // console: "null", maybe change...
+console.log($.Typeof(NaN))         // console: "null"
+console.log($.Typeof(null))        // console: "null"
+console.log($.Typeof(undefined))   // console: "null", maybe change...
 
-console.log($.typeof(true))        // console: "boolean"
-console.log($.typeof(false))       // console: "boolean"
+console.log($.Typeof(true))        // console: "boolean"
+console.log($.Typeof(false))       // console: "boolean"
 
-console.log($.typeof({}))          // console: "object"
+console.log($.Typeof({}))          // console: "object"
 
-console.log($.typeof(/^a$/))       // console: "regexp"
+console.log($.Typeof(/^a$/))       // console: "regexp"
 
-console.log($.typeof(new Date()))  // console: "date"
+console.log($.Typeof(new Date()))  // console: "date"
 
 (function() {
-    console.log($.typeof(arguments)) // console: "arguments"
+    console.log($.Typeof(arguments)) // console: "arguments"
 }());
 
 ```
