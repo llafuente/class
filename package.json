@@ -19,7 +19,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "tap test/test-*.js"
+    "test": "tap test/test-*.js",
+    "coveralls": "jscoverage lib && YOURPACKAGE_COVERAGE=1 tap test/test-*.js | coveralls"
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,8 @@
     "coveralls": "~2.2.0"
   },
   "devDependencies": {
-    "tap": "~0.2.5"
+    "tap": "~0.4.4",
+    "jscoverage": "~0.3.8",
+    "coveralls": "~2.2.0"
   }
 }
