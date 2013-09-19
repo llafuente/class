@@ -7,6 +7,7 @@
     }
 
     require("function-enhancements");
+    require("object-enhancements");
     // vanilla
     var sugar,
         i,
