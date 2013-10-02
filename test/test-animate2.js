@@ -8,7 +8,7 @@ var $ = require("../index.js"),
 //debug
 $.log_level = 0;
 
-var Vector = $.Class("Vector", {
+var Vector = new $.Class("Vector", {
         x: 0,
         y: 0,
         style: "left: 0px; top: 0px;"

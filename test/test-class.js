@@ -6,22 +6,25 @@ var $ = require("../index.js"),
 $.log_level = 0;
 
 //Vector class
-var Vector = $.Class("Vector2", {
+var Vector = new $.Class("Vector2", {
     x: 0,
     y: 0,
     __i: false
 });
 
+
+
 Vector.hide(["__i"]);
 
+
 //Dog class
-var Dog = $.Class("Dog", {
+var Dog = new $.Class("Dog", {
     animal: true,
     __bite_power: 10
 });
 
 Dog.Implements({
-    bite: function(where) {
+    bite: function() {
         return "Dog bites!";
     },
     speak: function() {
@@ -32,7 +35,7 @@ Dog.Implements({
     }
 });
 
-var Kitty = $.Class("Kitty", {
+var Kitty = new $.Class("Kitty", {
     __bite_power: 5
 });
 
@@ -47,27 +50,30 @@ Kitty.Implements({
     }
 });
 
+console.log(Kitty);
+process.exit();
+
 
 //abstract
-var Animal = $.Class("Animal", {
+var Animal = new $.Class("Animal", {
     animal: true,
     __bite_power: null
 });
 
 Animal.Abstract({
-    "bite": function() {}
+    bite: function() {},
+    powerup: function(item) {}
 });
 
 
 //extend abstract class
-var Whale = $.Class("Whale", {
+var Whale = new $.Class("Whale", {
     __bite_power: /*it's over*/ 9000 /*!!!!!!!*/
 });
 
 Whale.Extends(Animal, false);
 
-
-var Mole = $.Class("Mole", {
+var Mole = new $.Class("Mole", {
     __bite_power: -1
 });
 
@@ -76,6 +82,8 @@ Mole.Extends(Animal, false);
 Mole.Implements({
     bite: function() {
         return "you can see a mole when bite you!";
+    },
+    powerup: function(item) {
     }
 });
 
@@ -119,7 +127,7 @@ test("extend test", function(t) {
 test("abstract test init", function(t) {
     try {
         new Animal(); // throws -> because its abstract!
-        throw "Impossible its abstract cannot be instanced!";
+        throw Error("Impossible its abstract cannot be instanced!");
     } catch(e) {
         t.notEqual(e.message.indexOf("missing method"), -1, "assertion " + e.message);
 
@@ -139,13 +147,50 @@ test("abstract test init extend", function(t) {
 
     //implement bite!
     Whale.Implements({
-        bite: function(where) {
+        bite: function() {
             return "kill me!";
         }
     });
+    process.exit();
 
     t.end();
 });
+
+
+test("abstract test argument count NOK", function(t) {
+
+
+    try {
+        Whale.Implements({
+            powerup: function() {}
+        });
+
+        throw Error("Impossible cannot implement powerup with no arguments!");
+    } catch(e) {
+        t.notEqual(e.message.indexOf("parameter count"), -1, "assertion " + e.message);
+    }
+
+    t.end();
+});
+
+
+test("abstract test argument count OK", function(t) {
+
+    try {
+
+        Whale.Implements({
+            powerup: function(item) { return item; }
+        });
+
+        throw Error("no problem");
+    } catch(e) {
+        t.notEqual(e.message.indexOf("no problem"), -1, "assertion " + e.message);
+    }
+
+    t.end();
+});
+
+
 
 
 
@@ -192,32 +237,32 @@ test("serialization", function(t) {
     t.deepEqual(
         d.serialize(), //serialize without private vars
         { animal: true } // expected!
-    );
+    ,"Dog");
 
     t.deepEqual(
         k.serialize(), //serialize without private vars
         { animal: true } // expected!
-    );
+    ,"Kitty");
 
     t.deepEqual(
         w.serialize(), //serialize without private vars
         { animal: true } // expected!
-    );
+    ,"Whale");
 
     t.deepEqual(
         d.serialize(true), //serialize without private vars
         { animal: true, __bite_power: 10} // expected!
-    );
+    ,"Dog internal");
 
     t.deepEqual(
         k.serialize(true), //serialize without private vars
         { animal: true, __bite_power: 5 } // expected!
-    );
+    ,"Kitty internal");
 
     t.deepEqual(
         w.serialize(true), //serialize without private vars
         { animal: true, __bite_power: 9000 } // expected!
-    );
+    ,"Whale internal");
 
 
     t.end();
@@ -294,6 +339,7 @@ test("hide properties", function(t) {
     var m = new Mole(),
         v = new Vector(),
         key;
+
 
     for(key in v) {
         t.notEqual(key, "__i", "Vector is not hidden");

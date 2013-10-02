@@ -8,6 +8,7 @@
 
     require("function-enhancements");
     require("object-enhancements");
+    require("array-enhancements");
     // vanilla
     var sugar,
         i,
@@ -15,24 +16,9 @@
 
     module.exports = require("./lib/class.js");
 
-    sugar = require("./lib/sugar.js");
-    for (i in sugar) {
-        module.exports[i] = sugar[i];
-    }
+    require("./lib/sugar.js");
 
-    module.exports.populateTypes = function () {
-        if (once === true) {
-            return;
-        }
-        once = true;
-
-        RegExp.escape = sugar.RegExpEscape;
-        Object.mergecloning = sugar.ObjectMergeCloning;
-        Object.merge = sugar.ObjectMerge;
-        Object.each = sugar.ObjectEach;
-    };
-
-    // sugar
+    // sugar classes
     module.exports.Eventize = require("./lib/eventize.js").Eventize;
     module.exports.Events = require("./lib/events.js").Events;
     module.exports.EventMachine = require("./lib/eventmachine.js").EventMachine;

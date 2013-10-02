@@ -1,6 +1,6 @@
 {
   "name": "node-class",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Class system (Object oriented), focused on clean code. abstract, final, static, properties, implements, extends, de/serialize, and proper typeof and instanceof and some extra sugar",
   "main": "./index.js",
   "keywords": [
@@ -38,6 +38,7 @@
   "dependencies": {
     "function-enhancements": "*",
     "array-enhancements": "*",
+    "object-enhancements": "*",
     "coveralls": "*",
     "object-enhancements": "*"
   },

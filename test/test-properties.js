@@ -7,11 +7,13 @@ var $ = require("../index.js"),
 //debug
 $.log_level = 0;
 
-var Vector = $.Class("Vector2", {
+var Vector = new $.Class("Vector2", {
     x: 1,
     recursive: {},
     cloned: null
 });
+
+var v = new Vector();
 
 Vector.properties({y:1});
 
@@ -49,25 +51,23 @@ test("properties test instanced 2", function(t) {
 
     t.equal(v.cloned, null, "cloned error init");
 
-
-
     t.deepEqual(v2.cloned, v, "cloned error init");
 
     t.end();
 });
 
 test("properties added after instanced should not be in the instances", function(t) {
-    Vector.properties({emergency: true});
+    Vector.properties({emergency: "let's go!"});
 
-    t.equal(v.emergency, undefined, "emergency error after init");
-    t.equal(v2.emergency, undefined, "emergency error after init");
+    t.notEqual(v.emergency, undefined, "emergency error after init");
+    t.notEqual(v2.emergency, undefined, "emergency error after init");
 
     t.end();
 });
 
 test("properties seal fail if instanced before!", function(t) {
     v2.emergency = null; // this not raise
-    t.equal(v2.emergency, undefined, "emergency cant be modified, seal fail ?!");
+    t.equal(v2.emergency, "let's go!", "emergency cant be modified, seal fail ?!");
 
     t.end();
 });
@@ -82,7 +82,7 @@ test("properties cloned can be found in for in!", function(t) {
 });
 
 
-var Objc = $.Class("Vector2", {
+var Objc = new $.Class("Vector2c", {
     data: {
         xx: true,
         yy: false
