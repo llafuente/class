@@ -14,14 +14,16 @@ $.log_level = 0;
 function test_event(event, t) {
     var counter = 0;
 
-    var sample_ev0 = $.Eventize(function() {
+    function anon() {
         ++counter;
 
         if(counter == 1) {
-            this.delay(500, this);
-            this.remove();
+            anon.delay(500, this);
+            anon.remove();
         }
-    });
+    }
+
+    var sample_ev0 = $.Eventize(anon);
 
     var sample_ev1 = $.Eventize(function() {
         ++counter;

@@ -50,10 +50,6 @@ Kitty.Implements({
     }
 });
 
-console.log(Kitty);
-process.exit();
-
-
 //abstract
 var Animal = new $.Class("Animal", {
     animal: true,
@@ -151,7 +147,6 @@ test("abstract test init extend", function(t) {
             return "kill me!";
         }
     });
-    process.exit();
 
     t.end();
 });
@@ -350,7 +345,7 @@ test("hide properties", function(t) {
 
 
 test("disable autoset", function(t) {
-    var m = $.Class("disable_autoset", {
+    var m = new $.Class("disable_autoset", {
             prop : false
         }).disable_autoset(),
         m2 = new m({prop: true});
