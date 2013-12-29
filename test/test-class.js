@@ -1,356 +1,295 @@
 var $ = require("../index.js"),
+    __$class = $.$class,
+    __class = $.class,
+    __abstract = $.abstract,
+    __method = $.method,
+    __property = $.property,
+    __typeof = $.__typeof,
+
+    __rtypeof = $.__rtypeof,
+    __typed_clone = $.__typed_clone,
     tap = require("tap"),
     test = tap.test;
 
-//debug
-$.log_level = 0;
 
-//Vector class
-var Vector = new $.Class("Vector2", {
-    x: 0,
-    y: 0,
-    __i: false
-});
+test("__rtypeof & __typed_clone", function (t) {
+    t.equal(__rtypeof(10), "number", "number");
+    t.equal(__rtypeof("10"), "string", "string");
+    var mix1 = {"hello" : "string"};
+    t.deepEqual(__rtypeof(mix1), {__: "object", "hello": "string"}, "mix 1");
+    t.deepEqual(__typed_clone(mix1, __rtypeof(mix1)), mix1, "clone mix1");
 
-
-
-Vector.hide(["__i"]);
-
-
-//Dog class
-var Dog = new $.Class("Dog", {
-    animal: true,
-    __bite_power: 10
-});
-
-Dog.Implements({
-    bite: function() {
-        return "Dog bites!";
-    },
-    speak: function() {
-        return "bark";
-    },
-    toString: function() {
-        return "I'm a Dog";
-    }
-});
-
-var Kitty = new $.Class("Kitty", {
-    __bite_power: 5
-});
-
-Kitty.Extends(Dog, false); //false means do not override properties!
-
-Kitty.Implements({
-    bite: function() {
-        return "Kitty bites!";
-    },
-    speak: function() { // use of parent
-        return "cant " + this.parent() + ", I meow";
-    }
-});
-
-//abstract
-var Animal = new $.Class("Animal", {
-    animal: true,
-    __bite_power: null
-});
-
-Animal.Abstract({
-    bite: function() {},
-    powerup: function(item) {}
-});
-
-
-//extend abstract class
-var Whale = new $.Class("Whale", {
-    __bite_power: /*it's over*/ 9000 /*!!!!!!!*/
-});
-
-Whale.Extends(Animal, false);
-
-var Mole = new $.Class("Mole", {
-    __bite_power: -1
-});
-
-Mole.Extends(Animal, false);
-
-Mole.Implements({
-    bite: function() {
-        return "you can see a mole when bite you!";
-    },
-    powerup: function(item) {
-    }
-});
-
-//
-// -------------------------------------
-// -------------------------------------
-//
-
-
-test("properties test", function(t) {
-
-    var v = new Vector({x:10, y:10, __i: true}),
-        v2 = new Vector({x:15, y:15, __i: 15});
-
-    t.equal(v.x, 10, "v.x == 10");
-    t.equal(v.y, 10, "v.y == 10");
-    t.equal(v.__i, true, "v.__i == true");
-
-    t.equal(v2.x, 15, "v2.x == 15");
-    t.equal(v2.y, 15, "v2.y == 15");
-    t.equal(v2.__i, 15, "v2.__i == 15");
+    var mix2 = {hello: "world", ar: [10, 20]};
+    t.deepEqual(__rtypeof(mix2), {__: "object", hello : "string", ar: {__: "array", 0: "number", 1: "number"}}, "mix 1");
+    t.deepEqual(__typed_clone(mix2, __rtypeof(mix2)), mix2, "clone mix2");
 
     t.end();
 });
 
 
-test("extend test", function(t) {
-    var d = new Dog();
-    var k = new Kitty();
+test("property test", function (t) {
+    var V = __$class("TEST2/Vector"),
+        vi,
+        vi2;
 
-    t.equal(d.bite(), "Dog bites!", "Dog bites!");
-    t.equal("" + d, "I'm a Dog", "I'm a Dog");
+    __property(V, "x", 0);
+    __property(V, "y", 0);
 
-    t.equal(k.bite(), "Kitty bites!", "Kitty bite error: " + k.bite());
-    t.equal(k.speak(), "cant bark, I meow", "Kitty speak error: " + k.speak());
+    __property(V, "r", {
+        obj: {z: 100},
+        ar: [50, 50]
+    });
+
+    vi = new V();
+    vi2 = new V();
+
+    t.equal(vi.x, 0, "x=0");
+    t.equal(vi.y, 0, "y=0");
+
+    // this is because it's a prototype :)
+    __property(V, "z", 0);
+    t.equal(vi.z, 0, "later property propagates z=0");
+
+    // set and do not propagate to other instances
+    vi.x = 100;
+    t.equal(vi.x, 100, "x=100");
+    t.equal(vi2.x, 0, "x=100");
+
+    vi.r.obj.z = 200;
+    t.equal(vi.r.obj.z, 200, "vi.r.obj.z=200");
+    t.notEqual(vi2.r.obj.z, 200, "vi2.r.obj.z!=200");
+
+    vi2.r.ar.push(50);
+
+    t.equal(vi.r.ar.length, 2, "vi.r.ar.length=2");
+    t.equal(vi2.r.ar.length, 3, "vi2.r.ar.length=3");
+
+    console.log("??", vi.r);
+    console.log("??", vi2.r);
+
+    t.equal(__typeof(V), "function", "typeof constructor");
+    t.equal(__typeof(vi), "class", "typeof instance");
+
 
     t.end();
 });
 
 
-test("abstract test init", function(t) {
-    try {
-        new Animal(); // throws -> because its abstract!
-        throw Error("Impossible its abstract cannot be instanced!");
-    } catch(e) {
-        t.notEqual(e.message.indexOf("missing method"), -1, "assertion " + e.message);
+test("constructor test", function (t) {
+    var a = __$class("TEST3/A", function () {
+            this.inited = true;
+        }),
+        ai;
 
-    }
+    __property(a, "inited", false);
+
+    ai = new a();
+
+    t.equal(a.methods[0], "initialize", "initialize");
+    t.equal(a.properties[0], "inited", "first property");
+    t.equal(a.descriptors[0].type, "boolean", "first type is boolean");
+    t.equal(a.prototype.inited, false, "in proto is false");
+    t.equal(ai.inited, true, "in the instance is true");
+
     t.end();
 });
 
 
-test("abstract test init extend", function(t) {
+test("constructor parent test", function (t) {
+    var A = __$class("TEST4/A", function () {
+            this.type = this.type + "A";
+        }),
+        ai,
+        B,
+        bi;
 
-    try {
-        new Whale(); // throws -> because its abstract!
-        throw Error("Impossible not implementted bite!");
-    } catch(e) {
-        t.notEqual(e.message.indexOf("missing method"), -1, "assertion " + e.message);
-    }
+    __property(A, "type", "");
 
-    //implement bite!
-    Whale.Implements({
-        bite: function() {
-            return "kill me!";
+    B = __$class("TEST4/B", ["TEST4/A"], function () {
+        console.log(this);
+        this.__parent();
+        this.type = this.type + "B";
+    });
+
+    ai = new A();
+    bi = new B();
+
+    t.equal(A.properties[0], "type", "first property A");
+    t.equal(A.descriptors[0].type, "string", "first type is string A");
+    t.equal(A.prototype.type, "", "in proto is empty A");
+
+    t.equal(B.properties[0], "type", "first property B");
+    t.equal(B.descriptors[0].type, "string", "first type is string B");
+    t.equal(B.prototype.type, "", "in proto is empty B");
+
+    t.equal(ai.type, "A", "in the instance is A");
+    t.equal(bi.type, "AB", "in the instance is AB");
+
+    t.end();
+});
+
+
+test("autofill test", function (t) {
+    var A = __$class("TEST5/A"),
+        ai,
+        bi,
+        ci;
+
+    __property(A, "object", {
+        a: 1,
+        b: 2
+    });
+
+    __property(A, "array", [0, 0]);
+    __property(A, "string", "string");
+    __property(A, "number", 10);
+
+    ai = new A();
+    bi = new A({object: {a: 50, b: 50}, array: [50, 50], string: "newstring", number: 50});
+
+
+    t.deepEqual(ai.object, {a: 1, b: 2}, "value of object");
+    t.deepEqual(ai.array, [0, 0], "value of array");
+    t.equal(ai.string, "string", "value of string");
+    t.equal(ai.number, 10, "value of string");
+
+    t.deepEqual(bi.object, {a: 50, b: 50}, "value of object");
+    t.deepEqual(bi.array, [50, 50], "value of array");
+    t.equal(bi.string, "newstring", "value of string");
+    t.equal(bi.number, 50, "value of string");
+
+    // do not allow to add new things!
+    // 666 people is evil!
+    ci = new A({newprop: 666, array: [0, 0, 666], object: {"evil": 666}});
+    t.equal(ci.newprop, undefined, "newprop is undefined");
+    t.equal(ci.array[2], undefined, "array[2] is undefined");
+    t.equal(ci.object.evil, undefined, "array[2] is undefined");
+
+    t.end();
+});
+
+
+
+test("abstract / implement test", function (t) {
+
+    var u = __$class("User"),
+        UserMadness;
+
+    t.equal(u.$class, "User", "$class");
+    t.equal(u.prototype.$class, "User", "$class");
+
+    __method(u, "hello", function () {
+        console.log("say hello");
+    });
+
+    t.equal(u.methods.length, 1, "methods count");
+
+    __abstract(u, "defineme", function (onearg) {});
+
+    t.equal(u.abstracts.length, 1, "abstracts count");
+
+    UserMadness = __$class("UserMaddnes", ["User"]);
+
+    t.equal(UserMadness.methods.length, 1, "methods count");
+    t.equal(UserMadness.abstracts.length, 1, "abstracts count");
+
+    t.throws(function () {
+        new UserMadness();
+    }, "throws because has abstract");
+
+    __method(UserMadness, "hello", function () {
+        console.log("say madness hello");
+        this.__parent();
+    });
+
+    t.throws(function () {
+        __method(UserMadness, "defineme", function () {
+            console.log("say hello");
+        });
+    }, "throws because the method has different parameters");
+
+    __method(UserMadness, "defineme", function (onearg) {
+        console.log("say hello");
+    });
+
+    t.equal(UserMadness.abstracts.length, 0, "abstracts count");
+
+    //process.exit();
+    new UserMadness().hello();
+
+
+    t.end();
+});
+
+
+
+
+test("config property", function (t) {
+    var db = __$class("DB");
+
+    db.config_property("INT", {
+        zerofill: false,
+        unsigned: false
+    });
+
+    t.deepEqual(db.INT.UNSIGNED.ZEROFILL, {zerofill: true, unsigned: true}, "test config");
+    t.deepEqual(db.INT.UNSIGNED, {zerofill: false, unsigned: true}, "test config");
+    t.deepEqual(db.INT.ZEROFILL, {zerofill: true, unsigned: false}, "test config");
+
+    t.end();
+});
+
+
+
+test("test lazy class initialization", function (t) {
+    var AA = __class("AA", {
+            extends: [],
+            implements: [],
+            initialize: function() {
+            },
+            method1: function() {
+                return "method1";
+            },
+            property1: {
+                xx: true
+            }
+        }),
+        aai,
+        bb,
+        bbi;
+
+    aai = new AA();
+
+    t.deepEqual(aai.$class, "AA", "class name");
+    t.deepEqual(aai.property1, {xx:true}, "property");
+    t.deepEqual(typeof aai.method1, "function", "function");
+    t.deepEqual(aai.method1(), "method1", "function call");
+
+
+
+    BB = __class("BB", {
+        extends: ["AA"],
+        implements: [],
+        initialize: function() {
+        },
+        method2: function() {
+            return "method1";
+        },
+        property2: {
+            xx: true
         }
     });
 
-    t.end();
-});
-
-
-test("abstract test argument count NOK", function(t) {
-
-
-    try {
-        Whale.Implements({
-            powerup: function() {}
-        });
-
-        throw Error("Impossible cannot implement powerup with no arguments!");
-    } catch(e) {
-        t.notEqual(e.message.indexOf("parameter count"), -1, "assertion " + e.message);
-    }
-
-    t.end();
-});
-
-
-test("abstract test argument count OK", function(t) {
-
-    try {
-
-        Whale.Implements({
-            powerup: function(item) { return item; }
-        });
-
-        throw Error("no problem");
-    } catch(e) {
-        t.notEqual(e.message.indexOf("no problem"), -1, "assertion " + e.message);
-    }
-
-    t.end();
-});
-
-
-
-
-
-
-
-test("abstract instance", function(t) {
-
-    var w = new Whale(); // ok now :)
-
-    t.equal(w.bite(), "kill me!");
-
-    t.end();
-});
-
-
-
-test("aliasing methods", function(t) {
-    Whale.alias("bite", "destroy");
-
-    var w = new Whale(); // ok now :)
-
-    t.equal(w.destroy(), "kill me!");
-
-    t.end();
-});
-
-test("aliasing not found method", function(t) {
-
-    try {
-        Whale.alias("not_found", "not_found");
-        throw new Error("dont fail ?");
-    } catch(e) {
-        t.notEqual(e.message.indexOf("not found"), -1, "assertion " + e.message);
-    }
-
-    t.end();
-});
-
-test("serialization", function(t) {
-    var d = new Dog();
-    var k = new Kitty();
-    var w = new Whale(); // ok now :)
-
-    t.deepEqual(
-        d.serialize(), //serialize without private vars
-        { animal: true } // expected!
-    ,"Dog");
-
-    t.deepEqual(
-        k.serialize(), //serialize without private vars
-        { animal: true } // expected!
-    ,"Kitty");
-
-    t.deepEqual(
-        w.serialize(), //serialize without private vars
-        { animal: true } // expected!
-    ,"Whale");
-
-    t.deepEqual(
-        d.serialize(true), //serialize without private vars
-        { animal: true, __bite_power: 10} // expected!
-    ,"Dog internal");
-
-    t.deepEqual(
-        k.serialize(true), //serialize without private vars
-        { animal: true, __bite_power: 5 } // expected!
-    ,"Kitty internal");
-
-    t.deepEqual(
-        w.serialize(true), //serialize without private vars
-        { animal: true, __bite_power: 9000 } // expected!
-    ,"Whale internal");
-
-
-    t.end();
-});
-
-
-test("typeof", function(t) {
-    var d = new Dog();
-    var k = new Kitty();
-    var w = new Whale(); // ok now :)
-
-    // typeof test
-    t.equal($.Typeof(new Date()), "date", "type of string fail");
-
-    t.equal($.Typeof("string"), "string", "type of string fail");
-    t.equal($.Typeof([]), "array", "type of array fail");
-    t.equal($.Typeof(new Array(1)), "array", "type of array fail");
-    t.equal($.Typeof(1), "number", "number 1 fail");
-    t.equal($.Typeof(1.0), "number", "number 1.0 fail");
-    t.equal($.Typeof(NaN), "null", "Nan fail");
-    t.equal($.Typeof(false), "boolean", "boolean fail");
-    t.equal($.Typeof(true), "boolean", "boolean fail");
-    t.equal($.Typeof(undefined), "null", "undefined fail");
-    t.equal($.Typeof(null), "null", "null fail");
-    t.equal($.Typeof({}), "object", "object fail");
-    t.equal($.Typeof(Infinity), "number", "object fail");
-    t.equal($.Typeof(/^a$/), "regexp", "object fail");
-
-    (function() {
-        t.equal($.Typeof(arguments), "arguments", "undefined fail");
-    }());
-
-    (function() {
-        t.equal($.Typeof(arguments), "arguments", "undefined fail");
-    }({x:1}));
-
-    (function() {
-        t.equal($.Typeof(arguments), "arguments", "undefined fail");
-    }(1, 1));
-
-    t.equal($.Typeof(d), "Dog", "class name fail");
-    t.equal($.Typeof(k), "Kitty", "class name fail");
-    t.equal($.Typeof(w), "Whale", "class name fail");
-
-    t.end();
-});
-
-
-test("instanceof", function(t) {
-    var d = new Dog();
-    var k = new Kitty();
-    var w = new Whale(); // ok now :)
-
-    t.equal($.Instanceof(d, "Dog"), true, "class name fail");
-    t.equal($.Instanceof(d, "Class"), true, "class name fail");
-
-    t.equal($.Instanceof(k, "Kitty"), true, "class name fail");
-    t.equal($.Instanceof(k, "Class"), true, "class name fail");
-
-    t.equal($.Instanceof(w, "Animal"), true, "class name fail");
-    t.equal($.Instanceof(w, "Class"), true, "class name fail");
-    t.equal($.Instanceof(w, "Whale"), true, "class name fail");
-
-    t.equal($.Instanceof(Dog, "Dog"), true, "class name fail");
-    t.equal($.Instanceof(Kitty, "Kitty"), true, "class name fail");
-    t.equal($.Instanceof(Whale, "Whale"), true, "class name fail");
-
-    t.end();
-});
-
-
-
-test("hide properties", function(t) {
-    var m = new Mole(),
-        v = new Vector(),
-        key;
-
-
-    for(key in v) {
-        t.notEqual(key, "__i", "Vector is not hidden");
-    }
-
-    t.end();
-});
-
-
-test("disable autoset", function(t) {
-    var m = new $.Class("disable_autoset", {
-            prop : false
-        }).disable_autoset(),
-        m2 = new m({prop: true});
-
-    t.equal(m2.prop, false, "disable_autoset obj.prop to default");
+    bbi = new BB();
+
+    t.deepEqual(bbi.$class, "BB", "class name");
+    t.deepEqual(bbi.property1, {xx:true}, "property");
+    t.deepEqual(typeof bbi.method1, "function", "function");
+    t.deepEqual(bbi.method1(), "method1", "function call");
+
+    t.deepEqual(bbi.property2, {xx:true}, "property");
+    t.deepEqual(typeof bbi.method2, "function", "function");
+    t.deepEqual(bbi.method2(), "method1", "function call");
 
     t.end();
 });
