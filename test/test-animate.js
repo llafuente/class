@@ -30,7 +30,7 @@ cfg = Vector.setAnimationProterties("style", {
     mask: "left: @dpx; top: @dpx;",
     type: "number"
 });
-/*
+
 test("x animation integer 1", function(t) {
     var v = new Vector();
 
@@ -159,7 +159,7 @@ test("style animation masked", function(t) {
 });
 
 
-*/
+
 test("complex animation", function(t) {
     var v = new Vector();
 
@@ -173,9 +173,7 @@ test("complex animation", function(t) {
     });
 
     v.on("animation:update", function() {
-        console.log(v.style);
-        //t.equal(v.style, "left: 300px; top: 300px;");
-        //t.end();
+        //console.log(v.style);
     });
 
     //run!
@@ -194,46 +192,3 @@ test("complex animation", function(t) {
     });
 });
 
-
-
-
-
-
-
-
-
-/*
-
-        v.animate({
-            property: "x",
-            transition: $.Animate.Transitions.linear,
-            time: 5000,
-            fps: 1,
-            queue: true
-        }, );
-
-        v.once("animation:end", function() {
-            t.equal(v.x, 200);
-
-            v.animate({
-                property: "x",
-                transition: $.Animate.Transitions.linear,
-                time: 5000,
-                fps: 1,
-                queue: true
-            }, {
-                "0%" : 150,
-                "50%" : 50,
-                "100%" : 150
-            });
-
-            v.once("animation:end", function() {
-                t.equal(v.x, 150);
-
-
-            });
-        });
-
-    });
-
-*/

@@ -164,7 +164,7 @@ test("x animation stop", function(t) {
 });
 
 
-test("x animation chain", function(t) {
+test("x animation ignore", function(t) {
     var v = new Vector(),
         chained = false;
 
@@ -202,4 +202,69 @@ test("x animation chain", function(t) {
         time: 2000,
         fps: 1,
     }, [500, 600]);
+});
+
+
+
+test("x animation ignore", function(t) {
+    var v = new Vector(),
+        chained = false;
+
+    v.setAnimationLink(Animate.CANCEL);
+    v.once("animation:start", function() {
+        t.equal(v.x, 0);
+    });
+
+    v.once("animation:end", function() {
+        setTimeout(function() {
+            t.equal(v.x, 100);
+            t.equal(v.y, 50);
+            t.end();
+        }, 1000);
+
+    });
+
+    v.on("animation:chain", function() {
+        chained = true;
+    });
+
+    v.on("animation:update", function() {
+        //console.log(v.x);
+    });
+
+    //run!
+    v.animate({
+        transition: Animate.Transitions.linear,
+        time: 2000,
+        fps: 1,
+    }, {
+        "0%" : {
+            "x" : 0,
+            "y" : 0
+        },
+        "10%" : {
+            "y" : 50,
+            "x" : 25,
+        },
+        "100%" : {
+            "x" : 100
+        }
+    });
+
+    v.animate({
+        transition: Animate.Transitions.linear,
+        time: 2000,
+        fps: 1,
+    }, {
+        "0%" : {
+            "x" : 0
+        },
+        "10%" : {
+            "x" : 25
+        },
+        "100%" : {
+            "x" : 150
+        }
+    });
+
 });
