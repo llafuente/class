@@ -1,295 +1,469 @@
-var $ = require("../index.js"),
-    __$class = $.$class,
-    __class = $.class,
-    __abstract = $.abstract,
-    __method = $.method,
-    __property = $.property,
-    __typeof = $.__typeof,
+(function () {
+    var $ = require("../index.js"),
+        __$class = $.$class,
+        __$interface = $.$interface,
+        __class = $.class,
+        __abstract = $.abstract,
+        __method = $.method,
+        __property = $.property,
+        __typeof = $.__typeof,
 
-    __rtypeof = $.__rtypeof,
-    __typed_clone = $.__typed_clone,
-    tap = require("tap"),
-    test = tap.test;
-
-
-test("__rtypeof & __typed_clone", function (t) {
-    t.equal(__rtypeof(10), "number", "number");
-    t.equal(__rtypeof("10"), "string", "string");
-    var mix1 = {"hello" : "string"};
-    t.deepEqual(__rtypeof(mix1), {__: "object", "hello": "string"}, "mix 1");
-    t.deepEqual(__typed_clone(mix1, __rtypeof(mix1)), mix1, "clone mix1");
-
-    var mix2 = {hello: "world", ar: [10, 20]};
-    t.deepEqual(__rtypeof(mix2), {__: "object", hello : "string", ar: {__: "array", 0: "number", 1: "number"}}, "mix 1");
-    t.deepEqual(__typed_clone(mix2, __rtypeof(mix2)), mix2, "clone mix2");
-
-    t.end();
-});
+        __rtypeof = $.__rtypeof,
+        __typed_clone = $.__typed_clone,
+        tap = require("tap"),
+        test = tap.test;
 
 
-test("property test", function (t) {
-    var V = __$class("TEST2/Vector"),
-        vi,
-        vi2;
+    test("__rtypeof & __typed_clone", function (t) {
+        t.equal(__rtypeof(10), "number", "number");
+        t.equal(__rtypeof("10"), "string", "string");
+        var mix1 = {"hello" : "string"};
+        t.deepEqual(__rtypeof(mix1), {__: "object", "hello": "string"}, "mix 1");
+        t.deepEqual(__typed_clone(mix1, __rtypeof(mix1)), mix1, "clone mix1");
 
-    __property(V, "x", 0);
-    __property(V, "y", 0);
+        var mix2 = {hello: "world", ar: [10, 20]};
+        t.deepEqual(__rtypeof(mix2), {__: "object", hello : "string", ar: {__: "array", 0: "number", 1: "number"}}, "mix 1");
+        t.deepEqual(__typed_clone(mix2, __rtypeof(mix2)), mix2, "clone mix2");
 
-    __property(V, "r", {
-        obj: {z: 100},
-        ar: [50, 50]
+        t.end();
     });
 
-    vi = new V();
-    vi2 = new V();
 
-    t.equal(vi.x, 0, "x=0");
-    t.equal(vi.y, 0, "y=0");
+    test("property test", function (t) {
+        var Vector = __$class("TEST2/Vectorector"),
+            vector,
+            vector2,
+            TestNullProperty,
+            TestNull,
+            testnull;
 
-    // this is because it's a prototype :)
-    __property(V, "z", 0);
-    t.equal(vi.z, 0, "later property propagates z=0");
+        __property(Vector, "x", 0);
+        __property(Vector, "y", 0);
 
-    // set and do not propagate to other instances
-    vi.x = 100;
-    t.equal(vi.x, 100, "x=100");
-    t.equal(vi2.x, 0, "x=100");
+        __property(Vector, "r", {
+            obj: {z: 100},
+            ar: [50, 50]
+        });
 
-    vi.r.obj.z = 200;
-    t.equal(vi.r.obj.z, 200, "vi.r.obj.z=200");
-    t.notEqual(vi2.r.obj.z, 200, "vi2.r.obj.z!=200");
+        vector = new Vector();
+        vector2 = new Vector();
 
-    vi2.r.ar.push(50);
+        t.equal(vector.x, 0, "x = 0");
+        t.equal(vector.y, 0, "y = 0");
 
-    t.equal(vi.r.ar.length, 2, "vi.r.ar.length=2");
-    t.equal(vi2.r.ar.length, 3, "vi2.r.ar.length=3");
+        // this is because it's a prototype :)
+        __property(Vector, "z", 0);
+        t.equal(vector.z, 0, "later property propagates z = 0");
 
-    console.log("??", vi.r);
-    console.log("??", vi2.r);
+        // set and do not propagate to other instances
+        vector.x = 100;
+        t.equal(vector.x, 100, "x = 100");
+        t.equal(vector2.x, 0, "x = 100");
 
-    t.equal(__typeof(V), "function", "typeof constructor");
-    t.equal(__typeof(vi), "class", "typeof instance");
+        vector.r.obj.z = 200;
+        t.equal(vector.r.obj.z, 200, "vector.r.obj.z = 200");
+        t.notEqual(vector2.r.obj.z, 200, "vector2.r.obj.z != 200");
 
+        vector2.r.ar.push(50);
 
-    t.end();
-});
+        t.equal(vector.r.ar.length, 2, "vector.r.ar.length=2");
+        t.equal(vector2.r.ar.length, 3, "vector2.r.ar.length=3");
 
+        console.log("??", vector.r);
+        console.log("??", vector2.r);
 
-test("constructor test", function (t) {
-    var a = __$class("TEST3/A", function () {
-            this.inited = true;
-        }),
-        ai;
+        t.equal(__typeof(Vector), "class", "typeof class constructor");
+        t.equal(__typeof(vector), "instance", "typeof instance");
 
-    __property(a, "inited", false);
-
-    ai = new a();
-
-    t.equal(a.methods[0], "initialize", "initialize");
-    t.equal(a.properties[0], "inited", "first property");
-    t.equal(a.descriptors[0].type, "boolean", "first type is boolean");
-    t.equal(a.prototype.inited, false, "in proto is false");
-    t.equal(ai.inited, true, "in the instance is true");
-
-    t.end();
-});
+        //support for custom/unkown properies values using null
 
 
-test("constructor parent test", function (t) {
-    var A = __$class("TEST4/A", function () {
-            this.type = this.type + "A";
-        }),
-        ai,
-        B,
-        bi;
+        TestNull = __$class("TestNull");
+        TestNull.property("obj", null);
 
-    __property(A, "type", "");
+        TestNullProperty = {cloneme: true};
 
-    B = __$class("TEST4/B", ["TEST4/A"], function () {
-        console.log(this);
-        this.__parent();
-        this.type = this.type + "B";
+        testnull = new TestNull({obj: TestNullProperty});
+        t.deepEqual(testnull.obj, {cloneme: true}, "if the property is null, must clone whatever you send!");
+        TestNullProperty.cloneme = false;
+        t.deepEqual(testnull.obj.cloneme, true, "be sure it's clone");
+
+        t.end();
     });
 
-    ai = new A();
-    bi = new B();
 
-    t.equal(A.properties[0], "type", "first property A");
-    t.equal(A.descriptors[0].type, "string", "first type is string A");
-    t.equal(A.prototype.type, "", "in proto is empty A");
+    test("constructor test", function (t) {
+        var Initialize = __$class("Initialize", function () {
+                this.ready = true;
+            }),
+            instance;
 
-    t.equal(B.properties[0], "type", "first property B");
-    t.equal(B.descriptors[0].type, "string", "first type is string B");
-    t.equal(B.prototype.type, "", "in proto is empty B");
+        __property(Initialize, "ready", false);
 
-    t.equal(ai.type, "A", "in the instance is A");
-    t.equal(bi.type, "AB", "in the instance is AB");
+        instance = new Initialize();
 
-    t.end();
-});
+        t.equal(Initialize.methods[0], "initialize", "initialize");
+        t.equal(Initialize.properties[0], "ready", "first property");
+        t.equal(Initialize.descriptors[0].type, "boolean", "first type is boolean");
+        t.equal(Initialize.prototype.ready, false, "in proto is false");
+        t.equal(instance.ready, true, "in the instance is true");
 
-
-test("autofill test", function (t) {
-    var A = __$class("TEST5/A"),
-        ai,
-        bi,
-        ci;
-
-    __property(A, "object", {
-        a: 1,
-        b: 2
+        t.end();
     });
 
-    __property(A, "array", [0, 0]);
-    __property(A, "string", "string");
-    __property(A, "number", 10);
 
-    ai = new A();
-    bi = new A({object: {a: 50, b: 50}, array: [50, 50], string: "newstring", number: 50});
+    test("constructor parent test", function (t) {
+        var Father = __class("Father", {
+                initialize: function () {
+                    this.type = this.type + "A";
+                },
+                getClass: function () {
+                    return this.$class;
+                },
+                type: ""
+            }),
+            father_instance,
+            Son = __class("Son", {
+                extends: ["Father"],
+                initialize: function () {
+                    this.__parent();
+                    this.type = this.type + "B";
+                },
+                getClass: function () {
+                    return this.__parent() + "/" + this.$class;
+                }
+            }),
+            son_instance;
 
+        father_instance = new Father();
+        son_instance = new Son();
 
-    t.deepEqual(ai.object, {a: 1, b: 2}, "value of object");
-    t.deepEqual(ai.array, [0, 0], "value of array");
-    t.equal(ai.string, "string", "value of string");
-    t.equal(ai.number, 10, "value of string");
+        t.equal(Father.properties[0], "type", "first property of Father");
+        t.equal(Father.descriptors[0].type, "string", "first type is string of Father");
+        t.equal(Father.prototype.type, "", "in proto is empty Father");
 
-    t.deepEqual(bi.object, {a: 50, b: 50}, "value of object");
-    t.deepEqual(bi.array, [50, 50], "value of array");
-    t.equal(bi.string, "newstring", "value of string");
-    t.equal(bi.number, 50, "value of string");
+        t.equal(Son.properties[0], "type", "first property Son");
+        t.equal(Son.descriptors[0].type, "string", "first type is string Son");
+        t.equal(Son.prototype.type, "", "in proto is empty Son");
 
-    // do not allow to add new things!
-    // 666 people is evil!
-    ci = new A({newprop: 666, array: [0, 0, 666], object: {"evil": 666}});
-    t.equal(ci.newprop, undefined, "newprop is undefined");
-    t.equal(ci.array[2], undefined, "array[2] is undefined");
-    t.equal(ci.object.evil, undefined, "array[2] is undefined");
+        t.equal(father_instance.type, "A", "in the instance is A");
+        t.equal(son_instance.type, "AB", "in the instance is AB");
 
-    t.end();
-});
+        t.equal(father_instance.getClass(), "Father", "Father class is Father");
+        t.equal(son_instance.getClass(), "Son/Son", "Son class is Son, even if you call the parent one!");
 
+        t.equal(__typeof(father_instance), "instance", "typeof an instance is instance");
+        t.equal(__typeof(Father), "class", "typeof an instance is instance");
 
-
-test("abstract / implement test", function (t) {
-
-    var u = __$class("User"),
-        UserMadness;
-
-    t.equal(u.$class, "User", "$class");
-    t.equal(u.prototype.$class, "User", "$class");
-
-    __method(u, "hello", function () {
-        console.log("say hello");
+        t.end();
     });
 
-    t.equal(u.methods.length, 1, "methods count");
 
-    __abstract(u, "defineme", function (onearg) {});
+    test("autofill test", function (t) {
+        var A = __$class("TEST5/A"),
+            ai,
+            bi,
+            ci;
 
-    t.equal(u.abstracts.length, 1, "abstracts count");
+        __property(A, "object", {
+            a: 1,
+            b: 2
+        });
 
-    UserMadness = __$class("UserMaddnes", ["User"]);
+        __property(A, "array", [0, 0]);
+        __property(A, "string", "string");
+        __property(A, "number", 10);
 
-    t.equal(UserMadness.methods.length, 1, "methods count");
-    t.equal(UserMadness.abstracts.length, 1, "abstracts count");
+        ai = new A();
+        bi = new A({object: {a: 50, b: 50}, array: [50, 50], string: "newstring", number: 50});
 
-    t.throws(function () {
-        new UserMadness();
-    }, "throws because has abstract");
 
-    __method(UserMadness, "hello", function () {
-        console.log("say madness hello");
-        this.__parent();
+        t.deepEqual(ai.object, {a: 1, b: 2}, "value of object");
+        t.deepEqual(ai.array, [0, 0], "value of array");
+        t.equal(ai.string, "string", "value of string");
+        t.equal(ai.number, 10, "value of string");
+
+        t.deepEqual(bi.object, {a: 50, b: 50}, "value of object");
+        t.deepEqual(bi.array, [50, 50], "value of array");
+        t.equal(bi.string, "newstring", "value of string");
+        t.equal(bi.number, 50, "value of string");
+
+        // do not allow to add new things!
+        // 666 people is evectorl!
+        ci = new A({newprop: 666, array: [0, 0, 666], object: {"evectorl": 666}});
+        t.equal(ci.newprop, undefined, "newprop is undefined");
+        t.equal(ci.array[2], undefined, "array[2] is undefined");
+        t.equal(ci.object.evectorl, undefined, "array[2] is undefined");
+
+        t.end();
     });
 
-    t.throws(function () {
-        __method(UserMadness, "defineme", function () {
+
+
+    test("abstract / implement test", function (t) {
+
+        var u = __$class("User"),
+            UserMadness;
+
+        t.equal(u.$class, "User", "$class");
+        t.equal(u.prototype.$class, "User", "$class");
+
+        __method(u, "hello", function () {
             console.log("say hello");
         });
-    }, "throws because the method has different parameters");
 
-    __method(UserMadness, "defineme", function (onearg) {
-        console.log("say hello");
+        t.equal(u.methods.length, 1, "methods count");
+
+        __abstract(u, "defineme", function (onearg) {});
+
+        t.equal(u.abstracts.length, 1, "abstracts count");
+
+        UserMadness = __$class("UserMaddnes", ["User"]);
+
+        t.equal(UserMadness.methods.length, 1, "methods count");
+        t.equal(UserMadness.abstracts.length, 1, "abstracts count");
+
+        t.throws(function () {
+            var x = new UserMadness();
+        }, "throws because has abstract");
+
+        __method(UserMadness, "hello", function () {
+            console.log("say madness hello");
+            this.__parent();
+        });
+
+        t.throws(function () {
+            __method(UserMadness, "defineme", function () {
+                console.log("say hello");
+            });
+        }, "throws because the method has different parameters");
+
+        __method(UserMadness, "defineme", function (onearg) {
+            console.log("say hello");
+        });
+
+        t.equal(UserMadness.abstracts.length, 0, "abstracts count");
+
+        //process.exit();
+        new UserMadness().hello();
+
+
+        t.end();
     });
 
-    t.equal(UserMadness.abstracts.length, 0, "abstracts count");
-
-    //process.exit();
-    new UserMadness().hello();
-
-
-    t.end();
-});
 
 
 
+    test("config property", function (t) {
+        var db = __$class("DB");
 
-test("config property", function (t) {
-    var db = __$class("DB");
+        db.config_property("INT", {
+            zerofill: false,
+            unsigned: false
+        });
 
-    db.config_property("INT", {
-        zerofill: false,
-        unsigned: false
+        t.deepEqual(db.INT.UNSIGNED.ZEROFILL, {zerofill: true, unsigned: true}, "test config");
+        t.deepEqual(db.INT.UNSIGNED, {zerofill: false, unsigned: true}, "test config");
+        t.deepEqual(db.INT.ZEROFILL, {zerofill: true, unsigned: false}, "test config");
+
+        t.end();
     });
 
-    t.deepEqual(db.INT.UNSIGNED.ZEROFILL, {zerofill: true, unsigned: true}, "test config");
-    t.deepEqual(db.INT.UNSIGNED, {zerofill: false, unsigned: true}, "test config");
-    t.deepEqual(db.INT.ZEROFILL, {zerofill: true, unsigned: false}, "test config");
-
-    t.end();
-});
 
 
+    test("test lazy class initialization", function (t) {
+        var AA = __class("AA", {
+                extends: [],
+                implements: [],
+                initialize: function () {
+                },
+                method1: function () {
+                    return "method1";
+                },
+                property1: {
+                    xx: true
+                }
+            }),
+            aai,
+            BB,
+            bb,
+            bbi;
 
-test("test lazy class initialization", function (t) {
-    var AA = __class("AA", {
-            extends: [],
+        aai = new AA();
+
+        t.deepEqual(aai.$class, "AA", "class name");
+        t.deepEqual(aai.property1, {xx: true}, "property");
+        t.deepEqual(typeof aai.method1, "function", "function");
+        t.deepEqual(aai.method1(), "method1", "function call");
+
+
+
+        BB = __class("BB", {
+            extends: ["AA"],
             implements: [],
-            initialize: function() {
+            initialize: function () {
             },
-            method1: function() {
+            method2: function () {
                 return "method1";
             },
-            property1: {
+            property2: {
                 xx: true
             }
-        }),
-        aai,
-        bb,
-        bbi;
+        });
 
-    aai = new AA();
+        bbi = new BB();
 
-    t.deepEqual(aai.$class, "AA", "class name");
-    t.deepEqual(aai.property1, {xx:true}, "property");
-    t.deepEqual(typeof aai.method1, "function", "function");
-    t.deepEqual(aai.method1(), "method1", "function call");
+        t.deepEqual(bbi.$class, "BB", "class name");
+        t.deepEqual(bbi.property1, {xx: true}, "property");
+        t.deepEqual(typeof bbi.method1, "function", "function");
+        t.deepEqual(bbi.method1(), "method1", "function call");
 
+        t.deepEqual(bbi.property2, {xx: true}, "property");
+        t.deepEqual(typeof bbi.method2, "function", "function");
+        t.deepEqual(bbi.method2(), "method1", "function call");
 
-
-    BB = __class("BB", {
-        extends: ["AA"],
-        implements: [],
-        initialize: function() {
-        },
-        method2: function() {
-            return "method1";
-        },
-        property2: {
-            xx: true
-        }
+        t.end();
     });
 
-    bbi = new BB();
 
-    t.deepEqual(bbi.$class, "BB", "class name");
-    t.deepEqual(bbi.property1, {xx:true}, "property");
-    t.deepEqual(typeof bbi.method1, "function", "function");
-    t.deepEqual(bbi.method1(), "method1", "function call");
+    test("exception when you mess up!", function (t) {
+        var Interface = __$interface("Interface");
+        console.log(Interface);
+        __abstract(Interface, "x", function () {});
 
-    t.deepEqual(bbi.property2, {xx:true}, "property");
-    t.deepEqual(typeof bbi.method2, "function", "function");
-    t.deepEqual(bbi.method2(), "method1", "function call");
+        t.throws(function () {
+            var x = new Interface();
+        }, "throws because it's an interface");
 
-    t.end();
-});
+        var Implementation = __$class("Implementation", null, ["Interface"]);
+
+        t.throws(function () {
+            var x = new Implementation();
+        }, "throws because has an abstract method");
+        Implementation.method("x", function () {});
+
+        t.doesNotThrow(function () {
+            var x = new Implementation();
+        }, "throws because has an abstract method");
+
+
+        t.end();
+    });
+
+
+    test("home page example", function (t) {
+        var Character,
+            Player,
+            subzero,
+            scorpion;
+
+        // Create a Character class
+        Character = __class("Character", {
+            /// constructor
+            initialize: function () {
+            },
+            //properties
+            name: "",
+            hp: 0,
+            //methods
+            hit: function (damage) {
+                this.hp -= damage;
+            },
+            isDead: function () {
+                return this.hp < 0;
+            }
+        });
+
+        // now define an abstract method
+        // you could use "abstract method_name": function() {} instead
+        Character.abstract("attack", function (target, magic) {});
+
+
+        // if you try to create an instance, throws!
+        t.throws(function () {
+            var x = new Character();
+        }, "throws because has an abstract method");
+
+        // now we create the NPC class
+
+        Player = __class("Player", {
+            //parent
+            // if you are using a browser, consider using Extends, Implements (ucase) explorer will complaint
+            extends: ["Character"],
+            /// constructor
+            initialize: function () {
+                this.__parent(); // <-- call up
+            },
+            //properties
+            attacks: {fatality: 9000}, // yeah over 9 thousand!
+            // implement attack method
+            // be careful, node-class checks arguments count to be the same...
+            attack: function (target, magic) {
+                var damage = this.attacks[magic];
+                target.hit(damage);
+            }
+        }, true/*autoset*/);
+
+        subzero = new Player({
+            name: "subzero", // this auto set your properties!
+            hp: 10,
+            donotexist: true // but if you are evil, we don't let you! it's not merge! it's set!
+        });
+
+        t.equal(subzero.name, "subzero", "name is subzero");
+        t.equal(subzero.donotexist, undefined, "donotexist is undefined");
+
+        scorpion = new Player({
+            name: "scorpion", // this auto set your properties!
+            hp: 10
+        });
+
+        // subzero attack scorpion
+        subzero.attack(scorpion, "fatality");
+        t.equal(scorpion.isDead(), true, "scorpion is dead");
+        t.equal(subzero.isDead(), false, "subzero is alive");
+
+        // properties usage, the node-class way of thinking
+        var Storage = __class("Storage", {
+            //properties
+            boxes: {
+                oranges: 100,
+                apples: 100
+            },
+            unboxed: null
+        }, true/* autoset */, true/* seal instances! */);
+
+
+        // let's look instances behavior
+        var st01 = new Storage({
+            boxes: {
+                peaches: 50
+            },
+            unboxed: {
+                cherries: 120
+            }
+        });
+
+        t.equal(st01.boxes.peaches, undefined, "you cannot extend properties");
+        t.equal(st01.unboxed.cherries, 120, "but you can extend null properties with anything");
+
+        st01.new_property = 1;
+        t.equal(st01.new_property, undefined, "and you cannot set new properties in 'execution' time, seal!");
+
+        var st02 = new Storage({
+            boxes: {
+                oranges: {messing: "more"}
+            }
+        });
+
+        t.equal(st02.boxes.oranges, "0[object Object]", "node-class try to clone a number so 0 + What you send! stringified");
+        // be very careful, there is no type check of what you send, just what it's expected.
+
+        // typeof operator extends the functionality given by "object-enhancements" module.
+        t.equal(__typeof(Storage), "class", "typeof class constructor");
+        t.equal(__typeof(st02), "instance", "typeof instance");
+
+
+        t.end();
+    });
+}());
