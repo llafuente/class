@@ -56,8 +56,8 @@ Everything is best explained with a good test.
     // now we create the NPC class
 
     Player = __class("Player", {
-        //parent
-        // if you are using a browser, consider using Extends, Implements (ucase) explorer will complaint
+        // if you are using a browser, consider using Extends, Implements (ucase)
+        // explorer will complaint
         extends: ["Character"],
         /// constructor
         initialize: function () {
@@ -76,7 +76,8 @@ Everything is best explained with a good test.
     subzero = new Player({
         name: "subzero", // this auto set your properties!
         hp: 10,
-        donotexist: true // but if you are evil, we don't let you! it's not merge! it's set!
+        // but if you are evil, we don't let you! it's not merge! it's set!
+        donotexist: true
     });
 
     check_if.equal(subzero.name, "subzero", "name is subzero");
@@ -113,11 +114,14 @@ Everything is best explained with a good test.
         }
     });
 
-    check_if.equal(st01.boxes.peaches, undefined, "you cannot extend properties");
-    check_if.equal(st01.unboxed.cherries, 120, "but you can extend null properties with anything");
+    check_if.equal(st01.boxes.peaches, undefined,
+    	"you cannot extend properties");
+    check_if.equal(st01.unboxed.cherries, 120,
+    	"but you can extend null properties with anything");
 
     st01.new_property = 1;
-    check_if.equal(st01.new_property, undefined, "and you cannot set new properties in 'execution' time, seal!");
+    check_if.equal(st01.new_property, undefined,
+    	"and you cannot set new properties in 'execution' time, seal!");
 
     var st02 = new Storage({
         boxes: {
@@ -125,7 +129,8 @@ Everything is best explained with a good test.
         }
     });
 
-    check_if.equal(st02.boxes.oranges, "0[object Object]", "node-class try to clone a number so 0 + What you send! stringified");
+    check_if.equal(st02.boxes.oranges, "0[object Object]",
+    	"node-class try to clone a number so 0 + What you send! stringified");
     // be very careful, there is no type check of what you send, just what it's expected.
 
     // typeof operator extends the functionality given by "object-enhancements" module.
@@ -138,7 +143,9 @@ Everything is best explained with a good test.
 ## Dependencies
 
 Function type is modified by: [function-enhacements](http://travis-ci.org/llafuente/js-function-enhacements)
+
 Array type is modified by: [array-enhacements](http://travis-ci.org/llafuente/js-array-enhacements)
+
 Object type is modified by: [object-enhacements](http://travis-ci.org/llafuente/js-object-enhacements)
 
 You should take a look to those collections.
