@@ -19,7 +19,8 @@ Everything is best explained with a good test.
 
 ```js
 
-	// "check_if" is a node-tap test
+	// note: heck_if" is a node-tap test
+	// this is part of test/test-class.js
 
     var Character,
         Player,
@@ -139,10 +140,69 @@ Everything is best explained with a good test.
 
 ```
 
+## Events (Event emitter)
+
+Events is a flexible and powerful event emitter.
+
+Extending Events & Properties integration.
+
+```js
+
+    var Emitter = __class("EventEx", {
+            implements: ["Events"],
+            initialize: function(options) {
+                // if you want onEvent to work, send options to Events
+                // otherwise send nothing
+                // but you must call it!!
+                this.__parent(options);
+            }
+        }),
+        test_counter = 0,
+        em;
+
+    em = new Emitter({
+        onCountUp: function() {
+            ++test_counter;
+        },
+        onCountDown: function() {
+            --test_counter;
+        },
+        onGoDown: function() {
+            --test_counter;
+        }
+    });
+    // note CountUp was transform to count-up
+    // if you prefer another notation, override Event.$transform with your own
+    // there are a few already defined like: Event.$transformIntact or Event.$transform_snake_case
+    check_if.equal(1, em.listeners("count-up").length, "test listeners: 1");
+    check_if.equal(1, em.listeners("count-down").length, "test listeners: 1");
+    check_if.equal(1, em.listeners("go-down").length, "test listeners: 1");
+
+    // fire the event! you have many alias :)
+    em.trigger("count-up");
+    em.emit("count-up");
+    em.fireEvent("count-up");
+
+    check_if.equal(3, test_counter, "test_counter is 3");
+
+    // now decrement
+    em.emit("count-down");
+    check_if.equal(2, test_counter, "test_counter is 2");
+
+    // you can fire with asterisk will fire, go-down and count-down
+    em.emit("*-down");
+    check_if.equal(0, test_counter, "test_counter is 2");
+
+    check_if.end();
+
+```
+
+
+
 
 ## Dependencies
 
-Function type is modified by: [function-enhacements](http://travis-ci.org/llafuente/js-function-enhacements)
+Function "prototype" is modified by: [function-enhacements](http://travis-ci.org/llafuente/js-function-enhacements)
 
 Array type is modified by: [array-enhacements](http://travis-ci.org/llafuente/js-array-enhacements)
 
@@ -155,9 +215,10 @@ You should take a look to those collections.
 
 In order to achieve a good performance, no overhead, node-class do things you should know about.
 
-* You can call instances constructor (initialize method) outside.
-* You can access sensible information that can destroy your own class, like YourClass.methods, YourClass.properties, etc... print YourClass in console to see the metadata node-class use to create.
-* If you use more than 4 arguments in constructor or a derived function, apply will be used.
+* You can call instances constructor (initialize method) outside (it's not a flaw in design avoid an apply call)
+* You can access sensible information that can destroy your own class, like YourClass.methods, YourClass.properties, etc... print YourClass in console to see the metadata node-class use to create inheritance.
+* If you use more than 4 arguments in constructor or a overridden function, apply will be used.
+* Everything has debug enabled by default.
 
 ## Install
 

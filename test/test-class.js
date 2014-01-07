@@ -351,20 +351,26 @@
     });
 
 
-    test("home page example", function (t) {
-        var Character,
+    test("home page example", function (check_if) {
+        // note: "check_if" is a node-tap test
+        // this is part of test/test-class.js
+
+        var $ = require("../index.js"), // require("node-class")
+            __class = $.class,
+
+            Character,
             Player,
             subzero,
             scorpion;
 
         // Create a Character class
         Character = __class("Character", {
-            /// constructor
-            initialize: function () {
-            },
             //properties
             name: "",
             hp: 0,
+            /// constructor
+            initialize: function () {
+            },
             //methods
             hit: function (damage) {
                 this.hp -= damage;
@@ -380,15 +386,15 @@
 
 
         // if you try to create an instance, throws!
-        t.throws(function () {
+        check_if.throws(function () {
             var x = new Character();
         }, "throws because has an abstract method");
 
         // now we create the NPC class
 
         Player = __class("Player", {
-            //parent
-            // if you are using a browser, consider using Extends, Implements (ucase) explorer will complaint
+            // parent
+            // if you are using a browser, consider using Extends, Implements (ucase) explorer will complaint, or quote it.
             extends: ["Character"],
             /// constructor
             initialize: function () {
@@ -410,8 +416,8 @@
             donotexist: true // but if you are evil, we don't let you! it's not merge! it's set!
         });
 
-        t.equal(subzero.name, "subzero", "name is subzero");
-        t.equal(subzero.donotexist, undefined, "donotexist is undefined");
+        check_if.equal(subzero.name, "subzero", "name is subzero");
+        check_if.equal(subzero.donotexist, undefined, "donotexist is undefined");
 
         scorpion = new Player({
             name: "scorpion", // this auto set your properties!
@@ -420,8 +426,8 @@
 
         // subzero attack scorpion
         subzero.attack(scorpion, "fatality");
-        t.equal(scorpion.isDead(), true, "scorpion is dead");
-        t.equal(subzero.isDead(), false, "subzero is alive");
+        check_if.equal(scorpion.isDead(), true, "scorpion is dead");
+        check_if.equal(subzero.isDead(), false, "subzero is alive");
 
         // properties usage, the node-class way of thinking
         var Storage = __class("Storage", {
@@ -444,11 +450,11 @@
             }
         });
 
-        t.equal(st01.boxes.peaches, undefined, "you cannot extend properties");
-        t.equal(st01.unboxed.cherries, 120, "but you can extend null properties with anything");
+        check_if.equal(st01.boxes.peaches, undefined, "you cannot extend properties");
+        check_if.equal(st01.unboxed.cherries, 120, "but you can extend null properties with anything");
 
         st01.new_property = 1;
-        t.equal(st01.new_property, undefined, "and you cannot set new properties in 'execution' time, seal!");
+        check_if.equal(st01.new_property, undefined, "and you cannot set new properties in 'execution' time, seal!");
 
         var st02 = new Storage({
             boxes: {
@@ -456,14 +462,14 @@
             }
         });
 
-        t.equal(st02.boxes.oranges, "0[object Object]", "node-class try to clone a number so 0 + What you send! stringified");
+        check_if.equal(st02.boxes.oranges, "0[object Object]", "node-class try to clone a number so 0 + What you send! stringified");
         // be very careful, there is no type check of what you send, just what it's expected.
 
         // typeof operator extends the functionality given by "object-enhancements" module.
-        t.equal(__typeof(Storage), "class", "typeof class constructor");
-        t.equal(__typeof(st02), "instance", "typeof instance");
+        check_if.equal(__typeof(Storage), "class", "typeof class constructor");
+        check_if.equal(__typeof(st02), "instance", "typeof instance");
 
 
-        t.end();
+        check_if.end();
     });
 }());

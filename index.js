@@ -11,6 +11,9 @@
     require("array-enhancements");
 
     module.exports = require("./lib/class.js");
+    module.exports.Events = require("./lib/events.js").Events;
+    module.exports.Eventize = require("./lib/eventize.js").Eventize;
+    module.exports.Iterable = require("./lib/iterable.js").Iterable;
 
 }("undefined" === typeof module));
 
