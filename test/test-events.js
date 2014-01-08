@@ -20,27 +20,27 @@ function test_event(event, t) {
 
         if(counter == 1) {
             anon.delay(500, this);
-            anon.remove();
+            anon.$Event.remove("go");
         }
     }
 
     var sample_ev0 = $.Eventize(anon);
 
-    var sample_ev1 = $.Eventize(function() {
+    var sample_ev1 = $.Eventize(function eventized() {
         ++counter;
 
         t.equal(counter, 2, "[" + event + "]sample_ev1 error [" + counter + "] ");
     });
 
     // you can use normal functions if you dont want to stop/remove the listener from itself
-    var sample_ev2 = function() {
+    var sample_ev2 = function sample_ev2() {
         ++counter;
 
         t.equal(counter, 3, "[" + event + "]sample_ev2 error [" + counter + "] ");
     }
     var once = 0;
     // you can use normal functions if you dont want to stop/remove the listener from itself
-    var sample_once_ev3 = function() {
+    var sample_once_ev3 = function sample_once_ev3() {
         t.equal(++once, 1, "[" + event + "]sample_once_ev3 error [" + once + "] ");
     }
 
@@ -68,6 +68,8 @@ function test_event(event, t) {
     setTimeout(function() {
         t.equal(counter, 4, "[" + event + "]after 1000ms error [" + counter + "] ");
 
+        console.log(emitter.$__events);
+
         t.equal(emitter.hasListeners("go"), 2, "[" + event + "] should be at 2 listeners");
         emitter.off("go", sample_ev1);
         t.equal(emitter.hasListeners("go"), 1, "[" + event + "] should be at 1 listeners");
@@ -92,13 +94,13 @@ test("on_unhandled_event", function(t) {
     var emitter = new $.Events(),
         count_unhandled = 0,
         count_test = 0;
-    emitter.on_unhandled_event(function() {
+    emitter.on_unhandled_event(function on_unhandled_event() {
         ++count_unhandled;
     });
 
     emitter.fireEvent("test");
 
-    emitter.on("test", function() {
+    emitter.on("test", function test_event_fn() {
         ++count_test;
     });
 
@@ -111,25 +113,32 @@ test("on_unhandled_event", function(t) {
 });
 
 
-test("pipe_events", function(t) {
+test("pipeEvents", function(t) {
     var emitter = new $.Events(),
         emitter2 = new $.Events(),
         count_unhandled = 0,
         count_test = 0,
         count_unhandled2 = 0;
 
-    emitter.pipe_events(emitter2);
+    emitter.pipeEvents(emitter2);
 
-    emitter.on_unhandled_event(function() {
+    emitter.on_unhandled_event(function on_unhandled_event1() {
         ++count_unhandled;
     });
-    emitter2.on_unhandled_event(function() {
+    emitter2.on_unhandled_event(function on_unhandled_event2() {
         ++count_unhandled2;
     });
 
+
+    t.equal(count_unhandled, 0, "* unhandled 0");
+    t.equal(count_unhandled2, 0, "* unhandled2 0");
+
     emitter.fireEvent("test");
 
-    emitter.on("test", function() {
+    t.equal(count_unhandled, 1, "* unhandled 1");
+    t.equal(count_unhandled2, 1, "* unhandled2 1");
+
+    emitter.on("test", function counter_test_up() {
         ++count_test;
     });
 
@@ -147,20 +156,17 @@ test("error events throw", function(t) {
     var emitter = new $.Events(),
         count = 0;
 
-    try {
+    t.throws(function() {
         emitter.fireEvent("error", "wtf!");
-        t.equal(true, false, "Events throw, is ok");
-    } catch(e) {
-        t.equal(true, true, "Events throw, is ok");
-    }
-
+    }, "Events throw, is ok")
 
     emitter.on_unhandled_event(function() {
         ++count;
     });
 
-
-    emitter.fireEvent("error", "wtf!");
+    t.doesNotThrow(function() {
+        emitter.fireEvent("error", "wtf!");
+    }, "Events throw, is ok")
 
     t.equal(count, 1, "on_unhandled_event capture errors");
 
@@ -170,36 +176,43 @@ test("error events throw", function(t) {
 
 test("home page example, extending Events", function(check_if) {
     var Emitter = __class("EventEx", {
-            implements: ["Events"],
+            extends: ["Events"],
+
             initialize: function(options) {
-                // if you want onEvent to work, send options to Events
+                // if you want onEventName to work, send options to Events
                 // otherwise send nothing
-                // but you must call it!!
+                // but you must call it or throws
                 this.__parent(options);
             }
         }),
         test_counter = 0,
         em;
 
+    function increment() {
+        ++test_counter;
+    };
+
+    function decrement() {
+        --test_counter;
+        console.log("count-down decrement", test_counter);
+    };
+
     em = new Emitter({
-        onCountUp: function() {
-            ++test_counter;
-        },
-        onCountDown: function() {
-            --test_counter;
-        },
-        onGoDown: function() {
-            --test_counter;
-        }
+        onCountUp: increment,
+        onCountDown: decrement,
+        onGoDown: decrement
     });
-    // note CountUp was transform to count-up
+
+    // note: CountUp was transformed to count-up
     // if you prefer another notation, override Event.$transform with your own
     // there are a few already defined like: Event.$transformIntact or Event.$transform_snake_case
+
+
     check_if.equal(1, em.listeners("count-up").length, "test listeners: 1");
     check_if.equal(1, em.listeners("count-down").length, "test listeners: 1");
     check_if.equal(1, em.listeners("go-down").length, "test listeners: 1");
 
-    // fire the event! you have many alias :)
+    // fire the event! you have many alias to avoid collisions :)
     em.trigger("count-up");
     em.emit("count-up");
     em.fireEvent("count-up");
@@ -212,7 +225,45 @@ test("home page example, extending Events", function(check_if) {
 
     // you can fire with asterisk will fire, go-down and count-down
     em.emit("*-down");
-    check_if.equal(0, test_counter, "test_counter is 2");
+    check_if.equal(0, test_counter, "test_counter is 0");
+
+    // you can listen once to an event
+    check_if.throws(function() {
+        em.once("count-down", decrement);
+    }, "throws it's normal, you can only attach once!");
+
+    em.once("count-down", function() {
+        --test_counter;
+        console.log("count-down anon", test_counter);
+    });
+
+    //or X times
+    em.on("count-up", function() {
+        ++test_counter;
+    }, 2);
+    em.emit("count-down");
+    check_if.equal(-2, test_counter, "test_counter is -2");
+    em.emit("count-down");
+    check_if.equal(-3, test_counter, "test_counter is -3");
+
+    em.emit("count-up");
+    check_if.equal(-1, test_counter, "test_counter is -1");
+
+    em.emit("count-up");
+    check_if.equal(1, test_counter, "test_counter is 1");
+
+    em.emit("count-up");
+    check_if.equal(2, test_counter, "test_counter is 2");
+
+
+    check_if.throws(function() {
+        em.emit("error", "wtf");
+    }, "throws because no error listener");
+
+    em.addListener("error", function() {});
+    check_if.doesNotThrow(function() {
+        em.emit("error", "wtf");
+    }, "throws because no error listener");
 
     check_if.end();
 });

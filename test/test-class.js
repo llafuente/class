@@ -6,7 +6,8 @@
         __abstract = $.abstract,
         __method = $.method,
         __property = $.property,
-        __typeof = $.__typeof,
+        __typeof = $["typeof"],
+        __instanceof = $["instanceof"],
 
         __rtypeof = $.__rtypeof,
         __typed_clone = $.__typed_clone,
@@ -154,6 +155,16 @@
 
         t.equal(__typeof(father_instance), "instance", "typeof an instance is instance");
         t.equal(__typeof(Father), "class", "typeof an instance is instance");
+
+        t.equal(__instanceof(father_instance, "Father"), true, "father_instance is instanceof Father");
+        t.equal(__instanceof(son_instance, "Son"), true, "son_instance is instanceof Son");
+        t.equal(__instanceof(son_instance, "Father"), true, "son_instance is instanceof Son");
+
+        t.equal(__instanceof(father_instance, Father), true, "father_instance is instanceof Father");
+        t.equal(__instanceof(son_instance, Son), true, "son_instance is instanceof Son");
+        t.equal(__instanceof(son_instance, Father), true, "son_instance is instanceof Son");
+
+
 
         t.end();
     });
@@ -360,8 +371,8 @@
 
             Character,
             Player,
-            subzero,
-            scorpion;
+            goku,
+            vegetta;
 
         // Create a Character class
         Character = __class("Character", {
@@ -393,15 +404,18 @@
         // now we create the NPC class
 
         Player = __class("Player", {
-            // parent
-            // if you are using a browser, consider using Extends, Implements (ucase) explorer will complaint, or quote it.
+            // if you are using a browser, consider using Extends, Implements (ucased) or quoted
+            // IExplorer will complaint
             extends: ["Character"],
+
             /// constructor
             initialize: function () {
                 this.__parent(); // <-- call up
             },
+
             //properties
-            attacks: {fatality: 9000}, // yeah over 9 thousand!
+            attacks: {kamehameha: 9000}, // yeah over 9 thousand!
+
             // implement attack method
             // be careful, node-class checks arguments count to be the same...
             attack: function (target, magic) {
@@ -410,24 +424,35 @@
             }
         }, true/*autoset*/);
 
-        subzero = new Player({
-            name: "subzero", // this auto set your properties!
+        goku = new Player({
+            name: "goku", // this auto set your properties!
             hp: 10,
             donotexist: true // but if you are evil, we don't let you! it's not merge! it's set!
         });
 
-        check_if.equal(subzero.name, "subzero", "name is subzero");
-        check_if.equal(subzero.donotexist, undefined, "donotexist is undefined");
+        check_if.equal(goku.name, "goku", "name is goku");
+        check_if.equal(goku.donotexist, undefined, "donotexist is undefined");
 
-        scorpion = new Player({
-            name: "scorpion", // this auto set your properties!
+        vegetta = new Player({
+            name: "vegetta", // this auto set your properties!
             hp: 10
         });
 
-        // subzero attack scorpion
-        subzero.attack(scorpion, "fatality");
-        check_if.equal(scorpion.isDead(), true, "scorpion is dead");
-        check_if.equal(subzero.isDead(), false, "subzero is alive");
+        // goku attack vegetta
+        goku.attack(vegetta, "kamehameha");
+        check_if.equal(vegetta.isDead(), true, "vegetta is dead");
+        check_if.equal(goku.isDead(), false, "goku is alive!");
+
+        // inheritance
+        check_if.equal(__instanceof(vegetta, Player), true,
+            "vegetta is instanceof Player");
+        check_if.equal(__instanceof(vegetta, Character), true,
+            "vegetta is instanceof Character");
+
+        // if you prefer the you can send the string.
+        check_if.equal(__instanceof(vegetta, "Character"), true,
+            "vegetta is instanceof Character as string");
+
 
         // properties usage, the node-class way of thinking
         var Storage = __class("Storage", {
@@ -450,24 +475,31 @@
             }
         });
 
-        check_if.equal(st01.boxes.peaches, undefined, "you cannot extend properties");
-        check_if.equal(st01.unboxed.cherries, 120, "but you can extend null properties with anything");
+        check_if.equal(st01.boxes.peaches, undefined,
+            "you cannot extend properties!");
+        check_if.equal(st01.unboxed.cherries, 120,
+            "but you can extend null properties with anything...");
 
         st01.new_property = 1;
-        check_if.equal(st01.new_property, undefined, "and you cannot set new properties in 'execution' time, seal!");
+        check_if.equal(st01.new_property, undefined,
+            "and you cannot set new properties in 'execution' time, it's sealed!");
 
+        // a new example, and this is not a bug :)
         var st02 = new Storage({
             boxes: {
                 oranges: {messing: "more"}
             }
         });
 
-        check_if.equal(st02.boxes.oranges, "0[object Object]", "node-class try to clone a number so 0 + What you send! stringified");
-        // be very careful, there is no type check of what you send, just what it's expected.
+        check_if.equal(st02.boxes.oranges, "0[object Object]",
+            "node-class try to clone a number so 0 + (What you send)");
+        // for a huge performance boost this is the expected behavior.
+        // if node-class do a deep typeof of what you send every time
 
         // typeof operator extends the functionality given by "object-enhancements" module.
         check_if.equal(__typeof(Storage), "class", "typeof class constructor");
         check_if.equal(__typeof(st02), "instance", "typeof instance");
+
 
 
         check_if.end();

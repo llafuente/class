@@ -19,124 +19,139 @@ Everything is best explained with a good test.
 
 ```js
 
-	// note: heck_if" is a node-tap test
-	// this is part of test/test-class.js
+var $ = require("../index.js"), // require("node-class")
+    __class = $.class,
 
-    var Character,
-        Player,
-        subzero,
-        scorpion;
+    Character,
+    Player,
+    goku,
+    vegetta;
 
-    // Create a Character class
-    Character = __class("Character", {
-        /// constructor
-        initialize: function () {
-        },
-        //properties
-        name: "",
-        hp: 0,
-        //methods
-        hit: function (damage) {
-            this.hp -= damage;
-        },
-        isDead: function () {
-            return this.hp < 0;
-        }
-    });
+// Create a Character class
+Character = __class("Character", {
+    //properties
+    name: "",
+    hp: 0,
+    /// constructor
+    initialize: function () {
+    },
+    //methods
+    hit: function (damage) {
+        this.hp -= damage;
+    },
+    isDead: function () {
+        return this.hp < 0;
+    }
+});
 
-    // now define an abstract method
-    // you could use "abstract method_name": function() {} instead
-    Character.abstract("attack", function (target, magic) {});
-
-
-    // if you try to create an instance, throws!
-    check_if.throws(function () {
-        var x = new Character();
-    }, "throws because has an abstract method");
-
-    // now we create the NPC class
-
-    Player = __class("Player", {
-        // if you are using a browser, consider using Extends, Implements (ucase)
-        // explorer will complaint
-        extends: ["Character"],
-        /// constructor
-        initialize: function () {
-            this.__parent(); // <-- call up
-        },
-        //properties
-        attacks: {fatality: 9000}, // yeah over 9 thousand!
-        // implement attack method
-        // be careful, node-class checks arguments count to be the same...
-        attack: function (target, magic) {
-            var damage = this.attacks[magic];
-            target.hit(damage);
-        }
-    }, true/*autoset*/);
-
-    subzero = new Player({
-        name: "subzero", // this auto set your properties!
-        hp: 10,
-        // but if you are evil, we don't let you! it's not merge! it's set!
-        donotexist: true
-    });
-
-    check_if.equal(subzero.name, "subzero", "name is subzero");
-    check_if.equal(subzero.donotexist, undefined, "donotexist is undefined");
-
-    scorpion = new Player({
-        name: "scorpion", // this auto set your properties!
-        hp: 10
-    });
-
-    // subzero attack scorpion
-    subzero.attack(scorpion, "fatality");
-    check_if.equal(scorpion.isDead(), true, "scorpion is dead");
-    check_if.equal(subzero.isDead(), false, "subzero is alive");
-
-    // properties usage, the node-class way of thinking
-    var Storage = __class("Storage", {
-        //properties
-        boxes: {
-            oranges: 100,
-            apples: 100
-        },
-        unboxed: null
-    }, true/* autoset */, true/* seal instances! */);
+// now define an abstract method
+// you could use "abstract method_name": function() {} instead
+Character.abstract("attack", function (target, magic) {});
 
 
-    // let's look instances behavior
-    var st01 = new Storage({
-        boxes: {
-            peaches: 50
-        },
-        unboxed: {
-            cherries: 120
-        }
-    });
+// if you try to create an instance, throws!
+check_if.throws(function () {
+    var x = new Character();
+}, "throws because has an abstract method");
 
-    check_if.equal(st01.boxes.peaches, undefined,
-    	"you cannot extend properties");
-    check_if.equal(st01.unboxed.cherries, 120,
-    	"but you can extend null properties with anything");
+// now we create the NPC class
 
-    st01.new_property = 1;
-    check_if.equal(st01.new_property, undefined,
-    	"and you cannot set new properties in 'execution' time, seal!");
+Player = __class("Player", {
+    // if you are using a browser, consider using Extends, Implements (ucased) or quoted
+    // IExplorer will complaint
+    extends: ["Character"],
 
-    var st02 = new Storage({
-        boxes: {
-            oranges: {messing: "more"}
-        }
-    });
+    /// constructor
+    initialize: function () {
+        this.__parent(); // <-- call up
+    },
 
-    check_if.equal(st02.boxes.oranges, "0[object Object]",
-    	"node-class try to clone a number so 0 + What you send! stringified");
-    // be very careful, there is no type check of what you send, just what it's expected.
+    //properties
+    attacks: {kamehameha: 9000}, // yeah over 9 thousand!
 
-    // typeof operator extends the functionality given by "object-enhancements" module.
-    check_if.equal(__typeof(Storage), "class", "typeof class constructor");
-    check_if.equal(__typeof(st02), "instance", "typeof instance");
+    // implement attack method
+    // be careful, node-class checks arguments count to be the same...
+    attack: function (target, magic) {
+        var damage = this.attacks[magic];
+        target.hit(damage);
+    }
+}, true/*autoset*/);
+
+goku = new Player({
+    name: "goku", // this auto set your properties!
+    hp: 10,
+    donotexist: true // but if you are evil, we don't let you! it's not merge! it's set!
+});
+
+check_if.equal(goku.name, "goku", "name is goku");
+check_if.equal(goku.donotexist, undefined, "donotexist is undefined");
+
+vegetta = new Player({
+    name: "vegetta", // this auto set your properties!
+    hp: 10
+});
+
+// goku attack vegetta
+goku.attack(vegetta, "kamehameha");
+check_if.equal(vegetta.isDead(), true, "vegetta is dead");
+check_if.equal(goku.isDead(), false, "goku is alive!");
+
+// inheritance
+check_if.equal(__instanceof(vegetta, Player), true,
+    "vegetta is instanceof Player");
+check_if.equal(__instanceof(vegetta, Character), true,
+    "vegetta is instanceof Character");
+
+// if you prefer the you can send the string.
+check_if.equal(__instanceof(vegetta, "Character"), true,
+    "vegetta is instanceof Character as string");
+
+
+// properties usage, the node-class way of thinking
+var Storage = __class("Storage", {
+    //properties
+    boxes: {
+        oranges: 100,
+        apples: 100
+    },
+    unboxed: null
+}, true/* autoset */, true/* seal instances! */);
+
+
+// let's look instances behavior
+var st01 = new Storage({
+    boxes: {
+        peaches: 50
+    },
+    unboxed: {
+        cherries: 120
+    }
+});
+
+check_if.equal(st01.boxes.peaches, undefined,
+    "you cannot extend properties!");
+check_if.equal(st01.unboxed.cherries, 120,
+    "but you can extend null properties with anything...");
+
+st01.new_property = 1;
+check_if.equal(st01.new_property, undefined,
+    "and you cannot set new properties in 'execution' time, it's sealed!");
+
+// a new example, and this is not a bug :)
+var st02 = new Storage({
+    boxes: {
+        oranges: {messing: "more"}
+    }
+});
+
+check_if.equal(st02.boxes.oranges, "0[object Object]",
+    "node-class try to clone a number so 0 + (What you send)");
+// for a huge performance boost this is the expected behavior.
+// if node-class do a deep typeof of what you send every time
+
+// typeof operator extends the functionality given by "object-enhancements" module.
+check_if.equal(__typeof(Storage), "class", "typeof class constructor");
+check_if.equal(__typeof(st02), "instance", "typeof instance");
 
 ```
 
@@ -148,52 +163,95 @@ Extending Events & Properties integration.
 
 ```js
 
-    var Emitter = __class("EventEx", {
-            implements: ["Events"],
-            initialize: function(options) {
-                // if you want onEvent to work, send options to Events
-                // otherwise send nothing
-                // but you must call it!!
-                this.__parent(options);
-            }
-        }),
-        test_counter = 0,
-        em;
+var Emitter = __class("EventEx", {
+        extends: ["Events"],
 
-    em = new Emitter({
-        onCountUp: function() {
-            ++test_counter;
-        },
-        onCountDown: function() {
-            --test_counter;
-        },
-        onGoDown: function() {
-            --test_counter;
+        initialize: function(options) {
+            // if you want onEventName to work, send options to Events
+            // otherwise send nothing
+            // but you must call it or throws
+            this.__parent(options);
         }
-    });
-    // note CountUp was transform to count-up
-    // if you prefer another notation, override Event.$transform with your own
-    // there are a few already defined like: Event.$transformIntact or Event.$transform_snake_case
-    check_if.equal(1, em.listeners("count-up").length, "test listeners: 1");
-    check_if.equal(1, em.listeners("count-down").length, "test listeners: 1");
-    check_if.equal(1, em.listeners("go-down").length, "test listeners: 1");
+    }),
+    test_counter = 0,
+    em;
 
-    // fire the event! you have many alias :)
-    em.trigger("count-up");
-    em.emit("count-up");
-    em.fireEvent("count-up");
+function increment() {
+    ++test_counter;
+};
 
-    check_if.equal(3, test_counter, "test_counter is 3");
+function decrement() {
+    --test_counter;
+    console.log("count-down decrement", test_counter);
+};
 
-    // now decrement
-    em.emit("count-down");
-    check_if.equal(2, test_counter, "test_counter is 2");
+em = new Emitter({
+    onCountUp: increment,
+    onCountDown: decrement,
+    onGoDown: decrement
+});
 
-    // you can fire with asterisk will fire, go-down and count-down
-    em.emit("*-down");
-    check_if.equal(0, test_counter, "test_counter is 2");
+// note: CountUp was transformed to count-up
+// if you prefer another notation, override Event.$transform with your own
+// there are a few already defined like: Event.$transformIntact or Event.$transform_snake_case
 
-    check_if.end();
+
+check_if.equal(1, em.listeners("count-up").length, "test listeners: 1");
+check_if.equal(1, em.listeners("count-down").length, "test listeners: 1");
+check_if.equal(1, em.listeners("go-down").length, "test listeners: 1");
+
+// fire the event! you have many alias to avoid collisions :)
+em.trigger("count-up");
+em.emit("count-up");
+em.fireEvent("count-up");
+
+check_if.equal(3, test_counter, "test_counter is 3");
+
+// now decrement
+em.emit("count-down");
+check_if.equal(2, test_counter, "test_counter is 2");
+
+// you can fire with asterisk will fire, go-down and count-down
+em.emit("*-down");
+check_if.equal(0, test_counter, "test_counter is 0");
+
+// you can listen once to an event
+check_if.throws(function() {
+    em.once("count-down", decrement);
+}, "throws it's normal, you can only attach once!");
+
+em.once("count-down", function() {
+    --test_counter;
+    console.log("count-down anon", test_counter);
+});
+
+//or X times
+em.on("count-up", function() {
+    ++test_counter;
+}, 2);
+em.emit("count-down");
+check_if.equal(-2, test_counter, "test_counter is -2");
+em.emit("count-down");
+check_if.equal(-3, test_counter, "test_counter is -3");
+
+em.emit("count-up");
+check_if.equal(-1, test_counter, "test_counter is -1");
+
+em.emit("count-up");
+check_if.equal(1, test_counter, "test_counter is 1");
+
+em.emit("count-up");
+check_if.equal(2, test_counter, "test_counter is 2");
+
+
+check_if.throws(function() {
+    em.emit("error", "wtf");
+}, "throws because no error listener");
+
+em.addListener("error", function() {});
+check_if.doesNotThrow(function() {
+    em.emit("error", "wtf");
+}, "throws because no error listener");
 
 ```
 
