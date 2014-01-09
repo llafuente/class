@@ -1,5 +1,6 @@
 (function () {
     "use strict";
+    require('ass');
 
     var $ = require("../index.js"),
         tap = require("tap"),

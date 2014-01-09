@@ -1,4 +1,7 @@
 (function () {
+    "use strict";
+    require('ass');
+
     var $ = require("../index.js"),
         __$class = $.$class,
         __$interface = $.$interface,
@@ -480,7 +483,10 @@
         check_if.equal(st01.unboxed.cherries, 120,
             "but you can extend null properties with anything...");
 
-        st01.new_property = 1;
+        check_if.throws(function () {
+            st01.new_property = 1;
+        }, "TypeError, object is not extensible!");
+
         check_if.equal(st01.new_property, undefined,
             "and you cannot set new properties in 'execution' time, it's sealed!");
 
