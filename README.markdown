@@ -1,4 +1,4 @@
-# node-class [![Build Status](https://secure.travis-ci.org/llafuente/class.png?branch=master)](http://travis-ci.org/llafuente/class) [![Coverage Status](https://coveralls.io/repos/llafuente/class/badge.png)](https://coveralls.io/r/llafuente/class)
+# node-class [![Build Status](https://secure.travis-ci.org/llafuente/class.png?branch=master)](http://travis-ci.org/llafuente/class)
 
 
 ## Introduction
