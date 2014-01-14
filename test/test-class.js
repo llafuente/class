@@ -339,6 +339,25 @@
         t.end();
     });
 
+    test("static goes down", function (t) {
+        // Create a Character class
+        var StaticClass = __class("StaticClass", {
+                /// constructor
+                "static get": function () {
+                    return true;
+                }
+            }),
+            StaticSubClass = __class("StaticSubClass", {
+                extends: ["StaticClass"],
+            });
+
+        t.doesNotThrow(function () {
+            t.equal(StaticSubClass.get(), true, "get is true");
+        }, "static method must exists in subclasses");
+
+        t.end();
+    });
+
 
     test("exception when you mess up!", function (t) {
         var Interface = __$interface("Interface");

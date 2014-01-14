@@ -1,18 +1,31 @@
 {
   "name": "node-class",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "Javascript Class system (Object oriented). Support Interfaces, Classes, Extends/Implements.",
   "main": "./index.js",
   "keywords": [
     "abstract",
     "class",
+    "classical",
     "classes",
     "instanceof",
     "typeof",
     "extends",
     "implements",
     "events",
-    "object oriented"
+    "object oriented",
+    "oop",
+    "inheritance",
+    "inherit",
+    "class inheritance",
+    "prototype",
+    "extend",
+    "extends",
+    "implement",
+    "implements",
+    "interfaces",
+    "interface",
+    "mixin"
   ],
   "directories": {
     "lib": ".",
