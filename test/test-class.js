@@ -383,6 +383,27 @@
         t.end();
     });
 
+    test("advanced properties", function (t) {
+        var AProp = __class("AProp", {
+            }, true/*autoset is needed!*/),
+            instance;
+
+        AProp.property("test", 100, {enumerable: false});
+
+        instance = new AProp({test: 500});
+
+        t.doesNotThrow(function() {
+            var i;
+            for (i in instance) {
+                if (i === "test") {
+                    throw new Error(i + " found!");
+                }
+            }
+        });
+
+        t.end();
+    });
+
 
     test("home page example", function (check_if) {
         // note: "check_if" is a node-tap test
