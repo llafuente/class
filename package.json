@@ -1,6 +1,6 @@
 {
   "name": "node-class",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Javascript Class system (Object oriented). Support Interfaces, Classes, Extends/Implements.",
   "main": "./index.js",
   "keywords": [

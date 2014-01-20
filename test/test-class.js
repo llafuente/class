@@ -3,6 +3,7 @@
     require('ass');
 
     var $ = require("../index.js"),
+        util = require("util"),
         __$class = $.$class,
         __$interface = $.$interface,
         __class = $.class,
@@ -16,6 +17,8 @@
         __typed_clone = $.__typed_clone,
         tap = require("tap"),
         test = tap.test;
+
+        //console.log("util instance", util.inspect(instance, {depth: 5, colors: true}));
 
 
     test("__rtypeof & __typed_clone", function (t) {
@@ -72,9 +75,6 @@
 
         t.equal(vector.r.ar.length, 2, "vector.r.ar.length=2");
         t.equal(vector2.r.ar.length, 3, "vector2.r.ar.length=3");
-
-        console.log("??", vector.r);
-        console.log("??", vector2.r);
 
         t.equal(__typeof(Vector), "class", "typeof class constructor");
         t.equal(__typeof(vector), "instance", "typeof instance");
@@ -223,7 +223,7 @@
         t.equal(u.prototype.$class, "User", "$class");
 
         __method(u, "hello", function () {
-            console.log("say hello");
+            console.log("# say hello");
         });
 
         t.equal(u.methods.length, 1, "methods count");
@@ -242,18 +242,18 @@
         }, "throws because has abstract");
 
         __method(UserMadness, "hello", function () {
-            console.log("say madness hello");
+            console.log("# say madness hello");
             this.__parent();
         });
 
         t.throws(function () {
             __method(UserMadness, "defineme", function () {
-                console.log("say hello");
+                console.log("# say hello");
             });
         }, "throws because the method has different parameters");
 
         __method(UserMadness, "defineme", function (onearg) {
-            console.log("say hello");
+            console.log("# say hello");
         });
 
         t.equal(UserMadness.abstracts.length, 0, "abstracts count");
@@ -361,7 +361,7 @@
 
     test("exception when you mess up!", function (t) {
         var Interface = __$interface("Interface");
-        console.log(Interface);
+
         __abstract(Interface, "x", function () {});
 
         t.throws(function () {
@@ -385,12 +385,57 @@
 
     test("advanced properties", function (t) {
         var AProp = __class("AProp", {
+            }, true),
+            instance;
+
+        AProp.property("test", 100, {
+            enumerable: false,
+        });
+
+        instance = new AProp({test: 500});
+
+        t.equal(instance.test, 500, "tests is 500");
+
+        instance = new AProp();
+        t.equal(instance.test, 100, "tests is 100");
+
+        t.doesNotThrow(function() {
+            var i;
+            for (i in instance) {
+                if (i === "test") {
+                    throw new Error(i + " found!");
+                }
+            }
+        });
+
+        t.end();
+    });
+
+    test("setter/getters", function (t) {
+        var BProp = __class("BProp", {
+                _test: 100
             }, true/*autoset is needed!*/),
             instance;
 
-        AProp.property("test", 100, {enumerable: false});
+        BProp.property("test", undefined, {
+            enumerable: false,
+            set: function(val) {
+                this._test = val;
+            },
+            get: function(val) {
+                return this._test;
+            },
+        });
 
-        instance = new AProp({test: 500});
+        instance = new BProp();
+
+        t.equal(instance.test, 100);
+        instance.test = 500;
+        t.equal(instance.test, 500);
+
+
+        instance = new BProp({test: 500});
+        t.equal(instance.test, 500);
 
         t.doesNotThrow(function() {
             var i;
