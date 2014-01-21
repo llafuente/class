@@ -449,6 +449,19 @@
         t.end();
     });
 
+    test("error property change array to null", function (t) {
+        var C = __class("C", {
+                test: []
+            }, true),
+            instance;
+
+        instance = new C({test: null});
+
+        t.deepEqual(instance.test, []);
+
+        t.end();
+    });
+
 
     test("home page example", function (check_if) {
         // note: "check_if" is a node-tap test
