@@ -3,14 +3,37 @@
 
 ## Introduction
 
-If you were using Node-class v2, continue using it. The version 3 breaks everything, it will be easy to port. But It will take you some time.
+This is a classical object oriented but with the particular philosophy of Javascript. That means the usage of prototypes and defineProperty.
 
+What you can expect:
+
+* **extends** multiple classes (be careful with the order, it's important).
+* **implements** an interface (so have interfaces).
+* **final** (wip).
+* **hidden**, alias to enumerable:false.
+* **const**, alias to writable:false.
+* some helper methods like:.
+  * **serialize** (wip).
+  * **unserialze** (wip).
+  * **clone** (wip).
+
+What you will not find, **ever**:
+
+* *protected* or *private*, both require eval or the use of arguments.callee, that will hurt performance, and I'm very serious about top performance.
+* *instanceof X*, the existence of interfaces and multiple inheritance disallow it use. 
 
 
 ## TODO list
 
-* Hide / no enumerable properties
-* final methods
+* final methods.
+* examples for: accesors (getter/setters).
+* examples for: no numerable properties.
+* support: hidden modifier in properties names, enumerable:false (avoid using cls.property).
+* support: const modifier in properties names, writable:false (avoid using cls.property).
+* examples for: static.
+* examples for: Iterable.
+* fix Eventize attached the same event name to a different classes.
+* examples for: debug mode ON/OFF usage and consecuences in performance.
 
 ## Class / Interfaces
 
@@ -155,6 +178,7 @@ check_if.equal(__typeof(st02), "instance", "typeof instance");
 
 ```
 
+
 ## Events (Event emitter)
 
 Events is a flexible and powerful event emitter.
@@ -260,13 +284,18 @@ check_if.doesNotThrow(function() {
 
 ## Dependencies
 
-Function "prototype" is modified by: [function-enhacements](http://travis-ci.org/llafuente/js-function-enhacements)
+[function-enhacements](http://travis-ci.org/llafuente/js-function-enhacements)
 
-Array type is modified by: [array-enhacements](http://travis-ci.org/llafuente/js-array-enhacements)
+[array-enhacements](http://travis-ci.org/llafuente/js-array-enhacements)
 
-Object type is modified by: [object-enhacements](http://travis-ci.org/llafuente/js-object-enhacements)
+[object-enhacements](http://travis-ci.org/llafuente/js-object-enhacements)
 
-You should take a look to those collections.
+*Developement*
+
+[tap](https://github.com/isaacs/node-tap) (tests)
+
+[ass](https://github.com/lloyd/ass) (code-coverage)
+
 
 
 ## Performance
