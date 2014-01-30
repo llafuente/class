@@ -106,9 +106,9 @@
 
         instance = new Initialize();
 
-        t.equal(Initialize.methods[0], "initialize", "initialize");
-        t.equal(Initialize.properties[0], "ready", "first property");
-        t.equal(Initialize.descriptors[0].type, "boolean", "first type is boolean");
+        t.equal(Initialize.$$.methods[0], "initialize", "initialize");
+        t.equal(Initialize.$$.properties[0], "ready", "first property");
+        t.equal(Initialize.$$.descriptors[0].type, "boolean", "first type is boolean");
         t.equal(Initialize.prototype.ready, false, "in proto is false");
         t.equal(instance.ready, true, "in the instance is true");
 
@@ -142,12 +142,12 @@
         father_instance = new Father();
         son_instance = new Son();
 
-        t.equal(Father.properties[0], "type", "first property of Father");
-        t.equal(Father.descriptors[0].type, "string", "first type is string of Father");
+        t.equal(Father.$$.properties[0], "type", "first property of Father");
+        t.equal(Father.$$.descriptors[0].type, "string", "first type is string of Father");
         t.equal(Father.prototype.type, "", "in proto is empty Father");
 
-        t.equal(Son.properties[0], "type", "first property Son");
-        t.equal(Son.descriptors[0].type, "string", "first type is string Son");
+        t.equal(Son.$$.properties[0], "type", "first property Son");
+        t.equal(Son.$$.descriptors[0].type, "string", "first type is string Son");
         t.equal(Son.prototype.type, "", "in proto is empty Son");
 
         t.equal(father_instance.type, "A", "in the instance is A");
@@ -226,16 +226,16 @@
             console.log("# say hello");
         });
 
-        t.equal(u.methods.length, 1, "methods count");
+        t.equal(u.$$.methods.length, 1, "methods count");
 
         __abstract(u, "defineme", function (onearg) {});
 
-        t.equal(u.abstracts.length, 1, "abstracts count");
+        t.equal(u.$$.abstracts.length, 1, "abstracts count");
 
         UserMadness = __$class("UserMaddnes", ["User"]);
 
-        t.equal(UserMadness.methods.length, 1, "methods count");
-        t.equal(UserMadness.abstracts.length, 1, "abstracts count");
+        t.equal(UserMadness.$$.methods.length, 1, "methods count");
+        t.equal(UserMadness.$$.abstracts.length, 1, "abstracts count");
 
         t.throws(function () {
             var x = new UserMadness();
@@ -256,7 +256,7 @@
             console.log("# say hello");
         });
 
-        t.equal(UserMadness.abstracts.length, 0, "abstracts count");
+        t.equal(UserMadness.$$.abstracts.length, 0, "abstracts count");
 
         //process.exit();
         new UserMadness().hello();
