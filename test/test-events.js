@@ -3,6 +3,7 @@
     require('ass');
 
     var $ = require("../index.js"),
+        Fun = require("function-enhancements"),
         __class = $.class,
         tap = require("tap"),
         test = tap.test;
@@ -23,7 +24,7 @@
             ++counter;
 
             if (counter === 1) {
-                anon.delay(500, this);
+                Fun.delay(anon, 500, this);
                 anon.$Event.remove("go");
             }
         }

@@ -1,6 +1,8 @@
 (function () {
     "use strict";
     require('ass');
+    
+    //require("../index.js").debug = false;
 
     var $ = require("../index.js"),
         util = require("util"),
