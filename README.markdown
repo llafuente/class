@@ -27,9 +27,6 @@ What you will not find, **ever**:
 
 * final methods.
 * examples for: accesors (getter/setters).
-* examples for: no numerable properties.
-* support: hidden modifier in properties names, enumerable:false (avoid using cls.property).
-* support: const modifier in properties names, writable:false (avoid using cls.property).
 * examples for: static.
 * examples for: Iterable.
 * fix Eventize attached the same event name to a different classes.
@@ -41,6 +38,9 @@ Everything is best explained with a good test.
 
 
 ```js
+
+// note: "check_if" is a node-tap test
+// this is part of test/test-class.js
 
 var $ = require("../index.js"), // require("node-class")
     __class = $.class,
@@ -80,7 +80,8 @@ check_if.throws(function () {
 // now we create the NPC class
 
 Player = __class("Player", {
-    // if you are using a browser, consider using Extends, Implements (ucased) or quoted
+    // if you are using a browser, consider using:
+    // Extends & Implements (ucased) or quoted "extends"
     // IExplorer will complaint
     extends: ["Character"],
 
@@ -93,24 +94,27 @@ Player = __class("Player", {
     attacks: {kamehameha: 9000}, // yeah over 9 thousand!
 
     // implement attack method
-    // be careful, node-class checks arguments count to be the same...
+    // this was abstract, argument count must be the same!
     attack: function (target, magic) {
         var damage = this.attacks[magic];
         target.hit(damage);
     }
-}, true/*autoset*/);
+}, true/*auto-set*/);
 
 goku = new Player({
     name: "goku", // this auto set your properties!
     hp: 10,
-    donotexist: true // but if you are evil, we don't let you! it's not merge! it's set!
+
+    // but if you are evil, we don't let you!
+    // remember: it's not merge! it's auto-set!
+    donotexist: true
 });
 
 check_if.equal(goku.name, "goku", "name is goku");
 check_if.equal(goku.donotexist, undefined, "donotexist is undefined");
 
 vegetta = new Player({
-    name: "vegetta", // this auto set your properties!
+    name: "vegetta",
     hp: 10
 });
 
@@ -129,16 +133,25 @@ check_if.equal(__instanceof(vegetta, Character), true,
 check_if.equal(__instanceof(vegetta, "Character"), true,
     "vegetta is instanceof Character as string");
 
+```
 
-// properties usage, the node-class way of thinking
+Another example...
+
+```js
+
+
+// properties usage, the node-class "way of thinking"
 var Storage = __class("Storage", {
     //properties
     boxes: {
         oranges: 100,
         apples: 100
     },
-    unboxed: null
-}, true/* autoset */, true/* seal instances! */);
+    unboxed: null,
+
+    // this property is unmutable no-enumerable
+    "hidden const secret": "x mark the treasure!"
+}, true/* auto-set */, true/* seal instances! */);
 
 
 // let's look instances behavior
@@ -151,12 +164,33 @@ var st01 = new Storage({
     }
 });
 
-check_if.equal(st01.boxes.peaches, undefined,
-    "you cannot extend properties!");
-check_if.equal(st01.unboxed.cherries, 120,
-    "but you can extend null properties with anything...");
+// first we are going to check the hidden property is working
+check_if.doesNotThrow(function() {
+    var i;
 
-st01.new_property = 1;
+    for (i in st01) {
+        if (i === "secret") {
+            throw new Error("secret is found!");
+        }
+    }
+
+}, "secret found?");
+
+// can we modify it ?
+check_if.throws(function() {
+    st01.secret = null;
+}, "secret cannot be modified");
+
+// now the rest of properties!
+check_if.equal(st01.boxes.peaches, undefined,
+    "you cannot extend properties remember!! auto-set!");
+check_if.equal(st01.unboxed.cherries, 120,
+    "but you can extend 'null' properties with anything...");
+
+check_if.throws(function () {
+    st01.new_property = 1;
+}, "TypeError, object is not extensible!");
+
 check_if.equal(st01.new_property, undefined,
     "and you cannot set new properties in 'execution' time, it's sealed!");
 
@@ -169,8 +203,10 @@ var st02 = new Storage({
 
 check_if.equal(st02.boxes.oranges, "0[object Object]",
     "node-class try to clone a number so 0 + (What you send)");
-// for a huge performance boost this is the expected behavior.
-// if node-class do a deep typeof of what you send every time
+// this is the expected behavior, in fact is a performance trade of.
+// node-class keep a recursive typeof of the property and expect you to send
+// compatible data for cloning. Otherwise, use null
+// classes are not cloned.
 
 // typeof operator extends the functionality given by "object-enhancements" module.
 check_if.equal(__typeof(Storage), "class", "typeof class constructor");

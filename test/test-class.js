@@ -507,7 +507,8 @@
         // now we create the NPC class
 
         Player = __class("Player", {
-            // if you are using a browser, consider using Extends, Implements (ucased) or quoted
+            // if you are using a browser, consider using:
+            // Extends & Implements (ucased) or quoted "extends"
             // IExplorer will complaint
             extends: ["Character"],
 
@@ -520,24 +521,27 @@
             attacks: {kamehameha: 9000}, // yeah over 9 thousand!
 
             // implement attack method
-            // be careful, node-class checks arguments count to be the same...
+            // this was abstract, argument count must be the same!
             attack: function (target, magic) {
                 var damage = this.attacks[magic];
                 target.hit(damage);
             }
-        }, true/*autoset*/);
+        }, true/*auto-set*/);
 
         goku = new Player({
             name: "goku", // this auto set your properties!
             hp: 10,
-            donotexist: true // but if you are evil, we don't let you! it's not merge! it's set!
+
+            // but if you are evil, we don't let you!
+            // remember: it's not merge! it's auto-set!
+            donotexist: true
         });
 
         check_if.equal(goku.name, "goku", "name is goku");
         check_if.equal(goku.donotexist, undefined, "donotexist is undefined");
 
         vegetta = new Player({
-            name: "vegetta", // this auto set your properties!
+            name: "vegetta",
             hp: 10
         });
 
@@ -564,8 +568,11 @@
                 oranges: 100,
                 apples: 100
             },
-            unboxed: null
-        }, true/* autoset */, true/* seal instances! */);
+            unboxed: null,
+
+            // this property is unmutable no-enumerable
+            "hidden const secret": "x mark the treasure!"
+        }, true/* auto-set */, true/* seal instances! */);
 
 
         // let's look instances behavior
@@ -578,10 +585,28 @@
             }
         });
 
+        // first we are going to check the hidden property is working
+        check_if.doesNotThrow(function() {
+            var i;
+
+            for (i in st01) {
+                if (i === "secret") {
+                    throw new Error("secret is found!");
+                }
+            }
+
+        }, "secret found?");
+
+        // can we modify it ?
+        check_if.throws(function() {
+            st01.secret = null;
+        }, "secret cannot be modified");
+        
+        // now the rest of properties!
         check_if.equal(st01.boxes.peaches, undefined,
-            "you cannot extend properties!");
+            "you cannot extend properties remember!! auto-set!");
         check_if.equal(st01.unboxed.cherries, 120,
-            "but you can extend null properties with anything...");
+            "but you can extend 'null' properties with anything...");
 
         check_if.throws(function () {
             st01.new_property = 1;
@@ -599,8 +624,10 @@
 
         check_if.equal(st02.boxes.oranges, "0[object Object]",
             "node-class try to clone a number so 0 + (What you send)");
-        // for a huge performance boost this is the expected behavior.
-        // if node-class do a deep typeof of what you send every time
+        // this is the expected behavior, in fact is a performance trade of.
+        // node-class keep a recursive typeof of the property and expect you to send
+        // compatible data for cloning. Otherwise, use null
+        // classes are not cloned.
 
         // typeof operator extends the functionality given by "object-enhancements" module.
         check_if.equal(__typeof(Storage), "class", "typeof class constructor");
