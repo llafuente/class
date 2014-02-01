@@ -214,6 +214,48 @@ check_if.equal(__typeof(st02), "instance", "typeof instance");
 
 ```
 
+## Configurator properties.
+
+A configurator is a "property chain" that produce in the end an object.
+Better with the following example/test
+
+```js
+
+var db = __$class("DB");
+
+db.configurator("Number", {
+    zerofill: false, // lowercased
+    unsigned: false
+});
+
+t.deepEqual(
+    // use the uppercased name to configure
+    db.Number.UNSIGNED.ZEROFILL,
+    // this is the result
+    {zerofill: true, unsigned: true},
+"test config");
+
+t.deepEqual(db.Number.UNSIGNED, {zerofill: false, unsigned: true}, "test config");
+t.deepEqual(db.Number.ZEROFILL, {zerofill: true, unsigned: false}, "test config");
+
+```
+
+Some configuration require more than booleans... in that case...
+
+```js
+
+db.configurator("String", {
+    // same declaration
+    length: 8
+    // the third parameter force LENGTH to be a function
+}, ["length"]);
+
+t.deepEqual(db.String.LENGTH(100), {length: 100}, "test config");
+
+```
+
+
+Note, a configurator is static and it'll not be extended. It's supposed to be something like **const variable** in many languages with more power.
 
 ## Events (Event emitter)
 

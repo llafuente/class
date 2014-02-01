@@ -270,17 +270,24 @@
 
 
 
-    test("config property", function (t) {
+    test("a configurator property", function (t) {
         var db = __$class("DB");
 
-        db.config_property("INT", {
+        db.configurator("Number", {
             zerofill: false,
             unsigned: false
         });
 
-        t.deepEqual(db.INT.UNSIGNED.ZEROFILL, {zerofill: true, unsigned: true}, "test config");
-        t.deepEqual(db.INT.UNSIGNED, {zerofill: false, unsigned: true}, "test config");
-        t.deepEqual(db.INT.ZEROFILL, {zerofill: true, unsigned: false}, "test config");
+        t.deepEqual(db.Number.UNSIGNED.ZEROFILL, {zerofill: true, unsigned: true}, "test config");
+        t.deepEqual(db.Number.UNSIGNED, {zerofill: false, unsigned: true}, "test config");
+        t.deepEqual(db.Number.ZEROFILL, {zerofill: true, unsigned: false}, "test config");
+
+
+        db.configurator("String", {
+            length: 8
+        }, ["length"]);
+
+        t.deepEqual(db.String.LENGTH(100), {length: 100}, "test config");
 
         t.end();
     });
