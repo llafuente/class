@@ -51,6 +51,17 @@
 
         var emitter = new $.Events();
 
+/*
+console.log(
+        require("util").inspect($.Events, {depth: 6, colors: true})
+        );
+console.log(
+        require("util").inspect(emitter, {depth: 6, colors: true})
+        );
+
+process.exit();
+*/
+
         t.equal(emitter.hasListeners("go"), false, "[" + event + "] should be at false listeners");
 
         emitter.on("go", sample_ev0);
@@ -283,4 +294,10 @@
 
         t.end();
     });
+
+    test("extend events", function(t) {
+        t.end();
+
+    })
+
 }());
