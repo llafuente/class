@@ -13,14 +13,15 @@ What you can expect:
 * **hidden**, alias to enumerable:false.
 * **const**, alias to writable:false.
 * some helper methods like:.
-  * **serialize** (wip).
-  * **unserialze** (wip).
+  * **serialize**
+  * **unserialze**
+  * **inspect** for proper inspecting in node, avoid "[Getter/Setter]"
   * **clone** (wip).
 
 What you will not find, **ever**:
 
 * *protected* or *private*, both require eval or the use of arguments.callee, that will hurt performance, and I'm very serious about top performance.
-* *instanceof X*, the existence of interfaces and multiple inheritance disallow it use. 
+* *instanceof X*, the existence of interfaces and multiple inheritance disallow it use.
 
 
 ## TODO list
