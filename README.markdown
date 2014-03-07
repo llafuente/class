@@ -1,5 +1,6 @@
 # node-class [![Build Status](https://secure.travis-ci.org/llafuente/class.png?branch=master)](http://travis-ci.org/llafuente/class)
 
+![NPM](https://nodei.co/npm/node-class.png?compact=true)
 
 ## Introduction
 
